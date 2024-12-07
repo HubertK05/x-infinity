@@ -5,26 +5,23 @@ from bs4 import BeautifulSoup, SoupStrainer
 import requests
 
 
-async def get_definition(word, session, i):
-    url = f"https://dictionary.cambridge.org/dictionary/english/{word}"
+async def get_definition(word, session):
+    url = f"https://www.oxfordlearnersdictionaries.com/definition/english/{word}"
     headers = {'user-agent': 'x-infinity/0.0.1'}
     async with session.get(url, headers=headers) as response:
-        divs = SoupStrainer(attrs=["class", "def ddef_d db"])
-        definition = BeautifulSoup(await response.text(), "lxml", parse_only=divs).div
+        def_elements = SoupStrainer(attrs=["class", "def"])
+        definition = BeautifulSoup(await response.text(), "lxml", parse_only=def_elements).span
+
     if not definition:
         return None
-
-    definition = definition.text.strip()
-    if definition[-1] == ":":
-        definition = definition[:-1]
-    return definition
+    return definition.text
 
 
 async def get_multiple_definitions(words):
     definitions = []
     async with aiohttp.ClientSession() as session:
-        for i, word in enumerate(words):
-            definitions.append(get_definition(word, session, i))
+        for word in words:
+            definitions.append(get_definition(word, session))
         definitions = await asyncio.gather(*definitions)
     return definitions
 
