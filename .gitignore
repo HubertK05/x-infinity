@@ -1,6 +1,6 @@
 **/.vscode
 **/.pytest_cache
-**/venv
+**/.venv
 **/__pycache__
 **/words.txt
 **/.env
