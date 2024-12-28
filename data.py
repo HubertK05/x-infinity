@@ -4,6 +4,8 @@ import aiohttp
 from bs4 import BeautifulSoup, SoupStrainer
 import requests
 
+from wordlist_database import WordlistDatabase
+
 
 async def get_definition(word, session):
     url = f"https://www.oxfordlearnersdictionaries.com/definition/english/{word}"
@@ -34,10 +36,10 @@ def main():
     saved_words = random.sample(long_words, 100)
 
     definitions = asyncio.run(get_multiple_definitions(saved_words))
-    results = [f"{saved_words[i]},{definitions[i]}" for i in range(len(definitions)) if definitions[i]]
+    results = [{"word": saved_words[i], "definition": definitions[i]} for i in range(len(definitions)) if definitions[i]]
 
-    with open("words.txt", "w") as file:
-        file.write("\n".join(results))
+    db = WordlistDatabase()
+    db.set_wordlist("wordlist", results)
 
 
 if __name__ == "__main__":
