@@ -20,7 +20,8 @@ class WordlistDatabase:
         validate_wordlist_name(name)
 
         with open(f'{name}.json') as file:
-            return json.loads(file.read())
+            data = json.loads(file.read())
+        return [Entry(entry['word'], entry['definition']) for entry in data]
 
     def set_wordlist(self, name: str, wordlist: List[Entry]):
         validate_wordlist_name(name)
