@@ -1,0 +1,23 @@
+from typing import List
+from entry import Entry
+from util import EmptyWordlistNameError
+
+
+class Wordlist:
+    def __init__(self, name, entries: List[Entry]):
+        if not name:
+            raise EmptyWordlistNameError("Wordlist name is empty")
+        self.name = name
+        self.__entries = {}
+        for entry in entries:
+            self.__entries[entry.word] = (entry.definition)
+
+    @property
+    def entries(self):
+        return [Entry(word, definition) for word, definition in self.__entries.items()]
+
+    def get(self, word) -> Entry:
+        definition = self.__entries.get(word)
+        if definition is None:
+            return None
+        return Entry(word, definition)
