@@ -1,6 +1,8 @@
+from typing import List, Optional
 import PySide6.QtWidgets as widgets
 
 from entry import Entry
+from wordlist import Wordlist
 from wordlists import Ui_MainWindow
 
 
@@ -9,10 +11,9 @@ class ApplicationWindow(widgets.QMainWindow):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        # TODO: Add Wordlist class, with name and entries
-        self.wordlists = [("first", [Entry("word1", "meaning1"), Entry("word2", "meaning2")]), ("second", [Entry("word3", "meaning3")])]
-        self.selected_wordlist = None
-        self.selected_entry = None
+        self.wordlists: List[Wordlist] = [Wordlist("first", [Entry("word1", "meaning1"), Entry("word2", "meaning2")]), Wordlist("second", [Entry("word3", "meaning3")])]
+        self.selected_wordlist: Optional[Wordlist] = None
+        self.selected_entry: Optional[Entry] = None
 
         self.__update_wordlists_ui()
         self.ui.wordlists.itemClicked.connect(self.__on_wordlist_clicked)
@@ -23,12 +24,12 @@ class ApplicationWindow(widgets.QMainWindow):
     def __update_wordlists_ui(self):
         self.ui.wordlists.clear()
         for wordlist in self.wordlists:
-            # TODO: Wordlist class should have a name attribute, not indexing
-            self.ui.wordlists.addItem(wordlist[0])
+            self.ui.wordlists.addItem(wordlist.name)
 
-    def __on_wordlist_clicked(self, item):
-        self.selected_wordlist = [wordlist for wordlist in self.wordlists if wordlist[0] == item.text()][0]
-        entries = self.selected_wordlist[1]
+    def __on_wordlist_clicked(self, item: widgets.QListWidgetItem):
+        # TODO: Wordlists shouldn't be filtered and then indexed
+        self.selected_wordlist = [wordlist for wordlist in self.wordlists if wordlist.name == item.text()][0]
+        entries = self.selected_wordlist.entries
         self.__update_words_ui(entries)
 
     def __update_words_ui(self, entries):
@@ -38,8 +39,8 @@ class ApplicationWindow(widgets.QMainWindow):
         for entry in entries:
             self.ui.wordlist.addItem(entry.word)
 
-    def __on_word_clicked(self, item):
-        self.selected_entry = [entry for entry in self.selected_wordlist[1] if entry.word == item.text()][0]
+    def __on_word_clicked(self, item: widgets.QListWidgetItem):
+        self.selected_entry = self.selected_wordlist.get(item.text())
         self.__update_entry_ui(self.selected_entry)
 
     def __update_entry_ui(self, entry: Entry):
