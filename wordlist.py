@@ -1,6 +1,6 @@
 from typing import List
 from entry import Entry
-from util import EmptyWordlistNameError
+from util import ConflictingEntryNameError, EmptyWordlistNameError
 
 
 class Wordlist:
@@ -10,7 +10,7 @@ class Wordlist:
         self.name = name
         self.__entries = {}
         for entry in entries:
-            self.__entries[entry.word] = (entry.definition)
+            self.__entries[entry.word] = entry.definition
 
     @property
     def entries(self):
@@ -21,3 +21,17 @@ class Wordlist:
         if definition is None:
             return None
         return Entry(word, definition)
+
+    def add(self, entry: Entry):
+        if self.get(entry.word):
+            raise ConflictingEntryNameError(f"Entry with name {entry.word} already exists")
+        self.__entries[entry.word] = entry.definition
+
+    def remove(self, name: str):
+        if self.__entries.get(name):
+            del self.__entries[name]
+
+    def update(self, entry: Entry):
+        if self.get(entry.word) is None:
+            raise ConflictingEntryNameError(f"Entry with name {entry.word} does not exist")
+        self.__entries[entry.word] = entry.definition
