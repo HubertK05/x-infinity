@@ -2,8 +2,10 @@ from typing import List, Optional
 import PySide6.QtWidgets as widgets
 
 from entry import Entry
+from util import ConflictingEntryNameError, EmptyEntryError
 from wordlist import Wordlist
-from wordlists import Ui_MainWindow
+from wordlists_ui import Ui_MainWindow
+from new_entry_ui import Ui_new_entry_dialog
 
 
 class ApplicationWindow(widgets.QMainWindow):
@@ -21,6 +23,8 @@ class ApplicationWindow(widgets.QMainWindow):
         self.ui.wordlist_pages.setCurrentIndex(0)
         self.ui.word_pages.setCurrentIndex(0)
 
+        self.ui.new_entry_button.clicked.connect(self.__on_new_entry_dialog)
+
     def __update_wordlists_ui(self):
         self.ui.wordlists.clear()
         for wordlist in self.wordlists:
@@ -31,6 +35,10 @@ class ApplicationWindow(widgets.QMainWindow):
         self.selected_wordlist = [wordlist for wordlist in self.wordlists if wordlist.name == item.text()][0]
         entries = self.selected_wordlist.entries
         self.__update_words_ui(entries)
+
+    def add_entry(self, entry: Entry):
+        self.selected_wordlist.add(entry)
+        self.__update_words_ui(self.selected_wordlist.entries)
 
     def __update_words_ui(self, entries):
         self.ui.word_pages.setCurrentIndex(0)
@@ -48,6 +56,25 @@ class ApplicationWindow(widgets.QMainWindow):
         self.ui.entry.clear()
         self.ui.entry.addItem(entry.word)
         self.ui.entry.addItem(entry.definition)
+
+    def __on_new_entry_dialog(self):
+        dialog = NewEntryDialog(self)
+        dialog.exec()
+
+
+class NewEntryDialog(widgets.QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.ui = Ui_new_entry_dialog()
+        self.ui.setupUi(self)
+        self.ui.buttonBox.accepted.connect(self.__on_accepted)
+
+    def __on_accepted(self):
+        try:
+            entry = Entry(self.ui.word.text(), self.ui.definition.text())
+            self.parent().add_entry(entry)
+        except (EmptyEntryError, ConflictingEntryNameError) as e:
+            widgets.QMessageBox.critical(self, "Error", str(e))
 
 
 def main():
