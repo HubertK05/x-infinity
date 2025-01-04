@@ -40,18 +40,28 @@ def test_wordlist_cache_get_nonexistent_word_returns_none():
 
 def test_wordlist_cache_update_wordlist_name():
     cache = WordlistCache()
+    entry = Entry("word",  "definition")
     wordlist = Wordlist("test", [])
-    updated_wordlist = Wordlist("new name", [])
+    updated_wordlist = Wordlist("new name", [entry])
     cache.add(wordlist)
     assert cache.wordlists == [wordlist]
-    cache.update("test", "new name")
+    cache.update("test", updated_wordlist)
     assert cache.wordlists == [updated_wordlist]
+
+
+def test_wordlist_cache_update_wordlist_to_same_name_succeeds():
+    cache = WordlistCache()
+    first = Wordlist("test1", [])
+    second = Wordlist("test1", [Entry("word", "definition")])
+    cache.add(first)
+    cache.update("test1", second)
+    assert cache.wordlists == [second]
 
 
 def test_wordlist_cache_update_nonexistent_wordlist_name_fails():
     cache = WordlistCache()
     with pytest.raises(ConflictingEntryNameError):
-        cache.update("test", "new name")
+        cache.update("test", Wordlist("new name", []))
 
 
 def test_wordlist_cache_update_wordlist_to_duplicate_name_fails():
@@ -61,7 +71,7 @@ def test_wordlist_cache_update_wordlist_to_duplicate_name_fails():
     cache.add(first)
     cache.add(second)
     with pytest.raises(ConflictingEntryNameError):
-        cache.update("test1", "test2")
+        cache.update("test1", second)
 
 
 def test_wordlist_cache_remove_wordlist():

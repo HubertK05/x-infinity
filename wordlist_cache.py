@@ -19,12 +19,13 @@ class WordlistCache:
             raise ConflictingEntryNameError(f"Wordlist with name {wordlist.name} already exists")
         self.__wordlists[wordlist.name] = wordlist.entries
 
-    def update(self, old_name: str, new_name: str):
+    def update(self, old_name: str, wordlist: Wordlist):
         if old_name not in self.__wordlists:
             raise ConflictingEntryNameError(f"Wordlist with name {old_name} does not exist")
-        if new_name in self.__wordlists:
-            raise ConflictingEntryNameError(f"Wordlist with name {new_name} already exists")
-        self.__wordlists[new_name] = self.__wordlists.pop(old_name)
+        if old_name != wordlist.name and wordlist.name in self.__wordlists:
+            raise ConflictingEntryNameError(f"Wordlist with name {wordlist.name} already exists")
+        del self.__wordlists[old_name]
+        self.__wordlists[wordlist.name] = wordlist.entries
 
     def remove(self, name: str):
         if name in self.__wordlists:
