@@ -1,35 +1,34 @@
-import json
-from typing import List
-
-from entry import Entry
-import os
-
-from util import InvalidWordlistNameError
-
-
-def validate_wordlist_name(name: str):
-    if any([char in name for char in ['/', '\\', '.']]):
-        raise InvalidWordlistNameError("Wordlist cannot contain '/', '\\' or '.'")
+from wordlist import Wordlist
+from wordlist_cache import WordlistCache
+from wordlist_file_access import WordlistFileAccess
 
 
 class WordlistDatabase:
     def __init__(self):
-        pass
+        self.__file_access = WordlistFileAccess()
+        self.__cache = WordlistCache()
 
-    def get_wordlist(self, name: str) -> List[Entry]:
-        validate_wordlist_name(name)
+    def create(self, name: str):
+        self.__file_access.set_wordlist(name, [])
+        self.__cache.add(Wordlist(name, []))
 
-        with open(f'{name}.json') as file:
-            data = json.loads(file.read())
-        return [Entry(entry['word'], entry['definition']) for entry in data]
+    def get(self, name: str) -> Wordlist:
+        res = self.__cache.get(name)
+        if not res:
+            wordlist = Wordlist(name, self.__file_access.get_wordlist(name))
+            self.__cache.add(wordlist)
+            return wordlist
+        else:
+            return res
 
-    def set_wordlist(self, name: str, wordlist: List[Entry]):
-        validate_wordlist_name(name)
+    def update(self, old_name: str, wordlist: Wordlist):
+        self.__file_access.set_wordlist(wordlist.name, wordlist.entries)
+        self.__file_access.delete_wordlist(old_name)
+        self.__cache.update(old_name, wordlist)
 
-        with open(f'{name}.json', 'w') as file:
-            file.write(json.dumps(wordlist, indent=4))
+    def delete(self, name: str):
+        self.__cache.remove(name)
+        self.__file_access.delete_wordlist(name)
 
-    def delete_wordlist(self, name: str):
-        validate_wordlist_name(name)
-
-        os.remove(f'{name}.json')
+    def list_names(self):
+        return self.__file_access.list_wordlists()
