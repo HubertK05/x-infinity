@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Self
 from entry import Entry
 from util import ConflictingEntryNameError, EmptyWordlistNameError
 
@@ -11,6 +11,9 @@ class Wordlist:
         self.__entries = {}
         for entry in entries:
             self.__entries[entry.word] = entry.definition
+
+    def __eq__(self, other: Self):
+        return self.name == other.name and sorted(self.entries) == sorted(other.entries)
 
     @property
     def entries(self):

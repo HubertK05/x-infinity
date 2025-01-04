@@ -4,7 +4,7 @@ import aiohttp
 from bs4 import BeautifulSoup, SoupStrainer
 import requests
 
-from wordlist_database import WordlistDatabase
+from wordlist_file_access import WordlistFileAccess
 
 
 async def get_definition(word, session):
@@ -38,7 +38,7 @@ def main():
     definitions = asyncio.run(get_multiple_definitions(saved_words))
     results = [{"word": saved_words[i], "definition": definitions[i]} for i in range(len(definitions)) if definitions[i]]
 
-    db = WordlistDatabase()
+    db = WordlistFileAccess()
     db.set_wordlist("wordlist", results)
 
 
