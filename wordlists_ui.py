@@ -24,7 +24,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(780, 462)
+        MainWindow.resize(795, 462)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
@@ -115,6 +115,21 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.use_wordlist_button)
 
+        self.update_wordlist_button = QPushButton(self.centralwidget)
+        self.update_wordlist_button.setObjectName(u"update_wordlist_button")
+
+        self.horizontalLayout_2.addWidget(self.update_wordlist_button)
+
+        self.delete_wordlist_button = QPushButton(self.centralwidget)
+        self.delete_wordlist_button.setObjectName(u"delete_wordlist_button")
+
+        self.horizontalLayout_2.addWidget(self.delete_wordlist_button)
+
+        self.save_wordlist_button = QPushButton(self.centralwidget)
+        self.save_wordlist_button.setObjectName(u"save_wordlist_button")
+
+        self.horizontalLayout_2.addWidget(self.save_wordlist_button)
+
         self.new_entry_button = QPushButton(self.centralwidget)
         self.new_entry_button.setObjectName(u"new_entry_button")
 
@@ -140,21 +155,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.new_wordlist_button)
 
-        self.save_wordlist_button = QPushButton(self.centralwidget)
-        self.save_wordlist_button.setObjectName(u"save_wordlist_button")
-
-        self.horizontalLayout.addWidget(self.save_wordlist_button)
-
-        self.load_wordlist_button = QPushButton(self.centralwidget)
-        self.load_wordlist_button.setObjectName(u"load_wordlist_button")
-
-        self.horizontalLayout.addWidget(self.load_wordlist_button)
-
-        self.delete_wordlist_button = QPushButton(self.centralwidget)
-        self.delete_wordlist_button.setObjectName(u"delete_wordlist_button")
-
-        self.horizontalLayout.addWidget(self.delete_wordlist_button)
-
 
         self.gridLayout.addLayout(self.horizontalLayout, 2, 0, 1, 1)
 
@@ -164,7 +164,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 780, 20))
+        self.menubar.setGeometry(QRect(0, 0, 795, 20))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -187,12 +187,12 @@ class Ui_MainWindow(object):
         self.edit_entry_button.setText(QCoreApplication.translate("MainWindow", u"Edit entry", None))
         self.delete_entry_button.setText(QCoreApplication.translate("MainWindow", u"Delete entry", None))
         self.use_wordlist_button.setText(QCoreApplication.translate("MainWindow", u"Use this wordlist", None))
+        self.update_wordlist_button.setText(QCoreApplication.translate("MainWindow", u"Update wordlist", None))
+        self.delete_wordlist_button.setText(QCoreApplication.translate("MainWindow", u"Delete wordlist", None))
+        self.save_wordlist_button.setText(QCoreApplication.translate("MainWindow", u"Save wordlist", None))
         self.new_entry_button.setText(QCoreApplication.translate("MainWindow", u"New entry", None))
         self.wordlist_title.setText(QCoreApplication.translate("MainWindow", u"Your wordlists", None))
         self.selected_wordlist_title.setText(QCoreApplication.translate("MainWindow", u"Selected wordlist", None))
         self.new_wordlist_button.setText(QCoreApplication.translate("MainWindow", u"New wordlist", None))
-        self.save_wordlist_button.setText(QCoreApplication.translate("MainWindow", u"Save wordlist", None))
-        self.load_wordlist_button.setText(QCoreApplication.translate("MainWindow", u"Load wordlist", None))
-        self.delete_wordlist_button.setText(QCoreApplication.translate("MainWindow", u"Delete wordlist", None))
     # retranslateUi
 

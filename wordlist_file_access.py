@@ -20,14 +20,18 @@ class WordlistFileAccess:
         validate_wordlist_name(name)
 
         with open(f'data/{name}.json') as file:
-            data = json.loads(file.read())
+            raw_data = file.read()
+            if not raw_data:
+                data = []
+            else:
+                data = json.loads(raw_data)
         return [Entry(entry['word'], entry['definition']) for entry in data]
 
     def set_wordlist(self, name: str, wordlist: List[Entry]):
         validate_wordlist_name(name)
 
         with open(f'data/{name}.json', 'w') as file:
-            file.write(json.dumps(wordlist, indent=4))
+            file.write(json.dumps(as_json(wordlist), indent=4))
 
     def delete_wordlist(self, name: str):
         validate_wordlist_name(name)
@@ -36,3 +40,7 @@ class WordlistFileAccess:
 
     def list_wordlists(self) -> List[str]:
         return [file.split('.')[0] for file in os.listdir('data') if file.endswith('.json')]
+
+
+def as_json(entries: List[Entry]):
+    return [{"word": entry.word, "definition": entry.definition} for entry in entries]
