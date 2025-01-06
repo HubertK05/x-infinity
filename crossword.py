@@ -1,8 +1,16 @@
 from entry import Entry
+from util import InvalidCrosswordError
 
 
 class Crossword:
     def __init__(self, solution_column: int, entries: list[(int, Entry)]):
+        if not entries:
+            raise InvalidCrosswordError("Entries cannot be empty")
+        if solution_column < 0:
+            raise InvalidCrosswordError("Solution column cannot be negative")
+        if any(entry[0] < 0 for entry in entries):
+            raise InvalidCrosswordError("Entry column cannot be negative")
+
         self.__solution_column = solution_column
         self.__entries = entries
 
@@ -13,6 +21,9 @@ class Crossword:
     @property
     def solution_column(self) -> int:
         return self.__solution_column
+
+    def width(self) -> int:
+        return max([entry[0] + len(entry[1].word) for entry in self.__entries])
 
     def display_str(self) -> str:
         res = ""
