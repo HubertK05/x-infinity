@@ -62,7 +62,7 @@ class Ui_MainWindow(object):
         self.crossword.horizontalHeader().setVisible(False)
         self.crossword.horizontalHeader().setDefaultSectionSize(40)
         self.crossword.horizontalHeader().setHighlightSections(True)
-        self.crossword.verticalHeader().setDefaultSectionSize(40)
+        self.crossword.verticalHeader().setDefaultSectionSize(52)
 
         self.verticalLayout_2.addWidget(self.crossword)
 
@@ -73,7 +73,10 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.definitions.sizePolicy().hasHeightForWidth())
         self.definitions.setSizePolicy(sizePolicy)
-        self.definitions.setFont(font)
+        font1 = QFont()
+        font1.setFamilies([u"Monospace"])
+        font1.setPointSize(16)
+        self.definitions.setFont(font1)
 
         self.verticalLayout_2.addWidget(self.definitions)
 

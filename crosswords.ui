@@ -63,7 +63,7 @@
          <bool>true</bool>
         </attribute>
         <attribute name="verticalHeaderDefaultSectionSize">
-         <number>40</number>
+         <number>52</number>
         </attribute>
         <row/>
         <row/>
@@ -124,7 +124,7 @@
         <property name="font">
          <font>
           <family>Monospace</family>
-          <pointsize>30</pointsize>
+          <pointsize>16</pointsize>
          </font>
         </property>
        </widget>
