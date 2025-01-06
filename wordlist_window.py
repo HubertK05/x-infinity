@@ -36,6 +36,7 @@ class WordlistWindow(widgets.QMainWindow):
         self.ui.new_wordlist_button.clicked.connect(self.__on_new_wordlist_dialog)
         self.ui.update_wordlist_button.clicked.connect(self.__on_update_wordlist_dialog)
         self.ui.delete_wordlist_button.clicked.connect(self.__delete_wordlist)
+        self.ui.use_wordlist_button.clicked.connect(self.__on_use_wordlist)
 
     def create_wordlist(self, name: str):
         self.db.create(name)
@@ -58,6 +59,9 @@ class WordlistWindow(widgets.QMainWindow):
 
     def __save_wordlist(self, name: str):
         pass
+
+    def __on_use_wordlist(self):
+        self.parent().selected_wordlist = self.selected_wordlist
 
     def __on_new_wordlist_dialog(self):
         dialog = CreateWordlistDialog(self)
