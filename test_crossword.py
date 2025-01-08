@@ -1,6 +1,7 @@
 import pytest
 from crossword import Crossword
 from entry import Entry
+from letter import Letter
 from util import InvalidCrosswordError
 
 
@@ -9,6 +10,15 @@ def test_crossword_init():
     crossword = Crossword(0, [(1, entry)])
     assert crossword.solution_column == 0
     assert crossword.entries == [(1, entry)]
+    assert crossword.state == [(
+        1,
+        [
+            Letter("", False),
+            Letter("", False),
+            Letter("", False),
+            Letter("", False)
+        ]
+    )]
 
 
 def test_crossword_init_fails_if_empty():
@@ -38,3 +48,42 @@ def test_crossword_width_multiple_entries():
         (2, Entry("word", "definition"))
     ])
     assert crossword.width() == 6
+
+
+def test_crossword_get_letter():
+    crossword = Crossword(0, [
+        (0, Entry("word", "meaning")),
+        (2, Entry("another", "meaning"))
+        ])
+    letter = crossword.get_letter(1, 3)
+    assert letter == Letter("", False)
+
+
+def test_crossword_set_letter():
+    crossword = Crossword(0, [
+        (0, Entry("word", "meaning")),
+        (2, Entry("another", "meaning"))
+        ])
+    crossword.set_letter(0, 2, "x")
+    result = crossword.get_letter(0, 2)
+    assert result == Letter("x", False)
+
+
+def test_crossword_set_fixed_letter_does_not_change_it():
+    crossword = Crossword(0, [
+        (0, Entry("word", "meaning")),
+        (2, Entry("another", "meaning"))
+        ])
+    crossword.set_letter(0, 2, "r")
+    assert crossword.get_letter(0, 2) == Letter("r", False)
+    crossword.fix_letter(0, 2)
+    assert crossword.get_letter(0, 2) == Letter("r", True)
+    crossword.set_letter(0, 2, "")
+    assert crossword.get_letter(0, 2) == Letter("r", True)
+
+
+def test_crossword_fix_letter():
+    crossword = Crossword(0, [(0, Entry("word", "meaning"))])
+    assert crossword.get_letter(0, 2) == Letter("", False)
+    crossword.fix_letter(0, 2)
+    assert crossword.get_letter(0, 2) == Letter("r", True)

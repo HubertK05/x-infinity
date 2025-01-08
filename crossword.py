@@ -1,9 +1,11 @@
+from typing import List, Tuple
 from entry import Entry
+from letter import Letter
 from util import InvalidCrosswordError
 
 
 class Crossword:
-    def __init__(self, solution_column: int, entries: list[(int, Entry)]):
+    def __init__(self, solution_column: int, entries: List[Tuple[int, Entry]]):
         if not entries:
             raise InvalidCrosswordError("Entries cannot be empty")
         if solution_column < 0:
@@ -13,6 +15,7 @@ class Crossword:
 
         self.__solution_column = solution_column
         self.__entries = entries
+        self.state = [(offset, [Letter("", False)] * len(entry.word)) for offset, entry in entries]
 
     @property
     def entries(self) -> list[(int, Entry)]:
@@ -38,3 +41,15 @@ class Crossword:
             res += f'{i+1}.' + " " * entry[0] + f'{"_" * len(entry[1].word)}\n'
             definitions += f'{i+1}. {entry[1].definition}\n'
         return res + definitions
+
+    def get_letter(self, entry_idx: int, letter_idx: int) -> Letter:
+        return self.state[entry_idx][1][letter_idx]
+
+    def set_letter(self, entry_idx: int, letter_idx: int, letter: int):
+        target = self.state[entry_idx][1][letter_idx]
+        if not target.fixed:
+            target.letter = letter
+
+    def fix_letter(self, entry_idx: int, letter_idx: int):
+        self.state[entry_idx][1][letter_idx].letter = self.entries[entry_idx][1].word[letter_idx]
+        self.state[entry_idx][1][letter_idx].fixed = True
