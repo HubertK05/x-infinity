@@ -15,7 +15,7 @@ class Crossword:
 
         self.__solution_column = solution_column
         self.__entries = entries
-        self.state = [(offset, [Letter("", False)] * len(entry.word)) for offset, entry in entries]
+        self.state = [(offset, [Letter("", False) for _ in range(len(entry.word))]) for offset, entry in entries]
 
     @property
     def entries(self) -> list[(int, Entry)]:

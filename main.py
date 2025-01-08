@@ -20,6 +20,7 @@ class CrosswordWindow(widgets.QMainWindow):
         self.ui.generate_button.clicked.connect(self.__generate_crossword)
         self.ui.pushButton.clicked.connect(self.__on_select_wordlist)
         self.ui.crossword.cellChanged.connect(self.__on_cell_changed)
+        self.ui.crossword.cellDoubleClicked.connect(self.__on_double_clicked)
 
     @property
     def selected_wordlist(self):
@@ -34,12 +35,23 @@ class CrosswordWindow(widgets.QMainWindow):
         minimum = entries[row][0]
         maximum = minimum + len(entries[row][1].word) - 1
         text = self.ui.crossword.item(row, col).text()
+
+        if minimum <= col <= maximum:
+            letter_idx = col - minimum
+            target_letter = self.__crossword.get_letter(row, letter_idx)
+            if target_letter.fixed and target_letter.letter != text:
+                self.ui.crossword.item(row, col).setText(target_letter.letter)
+                return
+            elif text:
+                self.__crossword.set_letter(row, letter_idx, text[-1])
+
         if not text:
             return
-        if len(text) > 1:
-            self.ui.crossword.item(row, col).setText(text[-1])
         if col < minimum or maximum < col:
             self.ui.crossword.item(row, col).setText("")
+        else:
+            self.ui.crossword.item(row, col).setText(text[-1])
+
         if col < minimum:
             self.ui.crossword.setCurrentCell(row, minimum)
         elif minimum <= col < maximum:
@@ -47,6 +59,17 @@ class CrosswordWindow(widgets.QMainWindow):
         else:
             if row < len(entries) - 1:
                 self.ui.crossword.setCurrentCell(row + 1, entries[row + 1][0])
+
+    def __on_double_clicked(self, row: int, col: int):
+        entries = self.__crossword.entries
+        minimum = entries[row][0]
+        maximum = minimum + len(entries[row][1].word) - 1
+        if minimum <= col <= maximum:
+            letter_idx = col - minimum
+            self.__crossword.fix_letter(row, letter_idx)
+            letter = self.__crossword.get_letter(row, letter_idx)
+            self.ui.crossword.item(row, col).setText(letter.letter)
+            self.ui.crossword.item(row, col).setBackground(QBrush(QColor(224, 255, 224)))
 
     def __generate_crossword(self):
         if not self.__selected_wordlist:
