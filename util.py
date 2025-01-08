@@ -26,3 +26,8 @@ class CrosswordGenerationError(Exception):
 class InvalidWordlistNameError(Exception):
     def __init__(self, msg):
         super().__init__(msg)
+
+
+class InvalidLetterError(Exception):
+    def __init__(self, msg):
+        super().__init__(msg)
