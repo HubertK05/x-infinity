@@ -4,6 +4,7 @@ import aiohttp
 from bs4 import BeautifulSoup, SoupStrainer
 import requests
 
+from entry import Entry
 from wordlist_file_access import WordlistFileAccess
 
 
@@ -28,7 +29,7 @@ async def get_multiple_definitions(words):
     return definitions
 
 
-def main():
+def generate_wordlist():
     url = "https://raw.githubusercontent.com/MichaelWehar/Public-Domain-Word-Lists/master/5000-more-common.txt"
     response = requests.get(url)
     words = response.text.split()
@@ -36,7 +37,11 @@ def main():
     saved_words = random.sample(long_words, 100)
 
     definitions = asyncio.run(get_multiple_definitions(saved_words))
-    results = [{"word": saved_words[i], "definition": definitions[i]} for i in range(len(definitions)) if definitions[i]]
+    return [Entry(saved_words[i], definitions[i]) for i in range(len(definitions)) if definitions[i]]
+
+
+def main():
+    results = generate_wordlist()
 
     db = WordlistFileAccess()
     db.set_wordlist("wordlist", results)
