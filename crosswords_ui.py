@@ -15,10 +15,11 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHeaderView, QLabel, QLineEdit,
-    QListWidget, QListWidgetItem, QMainWindow, QMenuBar,
-    QPushButton, QSizePolicy, QStatusBar, QTableWidget,
-    QTableWidgetItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHeaderView, QLabel,
+    QLineEdit, QListWidget, QListWidgetItem, QMainWindow,
+    QMenuBar, QPushButton, QSizePolicy, QStackedWidget,
+    QStatusBar, QTableWidget, QTableWidgetItem, QVBoxLayout,
+    QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -31,13 +32,33 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.title = QLabel(self.centralwidget)
+        self.crossword_pages = QStackedWidget(self.centralwidget)
+        self.crossword_pages.setObjectName(u"crossword_pages")
+        self.page = QWidget()
+        self.page.setObjectName(u"page")
+        self.verticalLayout_4 = QVBoxLayout(self.page)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.no_crossword_label = QLabel(self.page)
+        self.no_crossword_label.setObjectName(u"no_crossword_label")
+        font = QFont()
+        font.setPointSize(30)
+        self.no_crossword_label.setFont(font)
+        self.no_crossword_label.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_4.addWidget(self.no_crossword_label)
+
+        self.crossword_pages.addWidget(self.page)
+        self.page_2 = QWidget()
+        self.page_2.setObjectName(u"page_2")
+        self.verticalLayout_3 = QVBoxLayout(self.page_2)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.title = QLabel(self.page_2)
         self.title.setObjectName(u"title")
         self.title.setAlignment(Qt.AlignCenter)
 
-        self.verticalLayout_2.addWidget(self.title)
+        self.verticalLayout_3.addWidget(self.title)
 
-        self.crossword = QTableWidget(self.centralwidget)
+        self.crossword = QTableWidget(self.page_2)
         if (self.crossword.columnCount() < 21):
             self.crossword.setColumnCount(21)
         if (self.crossword.rowCount() < 10):
@@ -50,12 +71,13 @@ class Ui_MainWindow(object):
         self.crossword.setItem(2, 0, __qtablewidgetitem2)
         self.crossword.setObjectName(u"crossword")
         self.crossword.setEnabled(True)
-        font = QFont()
-        font.setFamilies([u"Monospace"])
-        font.setPointSize(30)
-        self.crossword.setFont(font)
+        font1 = QFont()
+        font1.setFamilies([u"Monospace"])
+        font1.setPointSize(30)
+        self.crossword.setFont(font1)
         self.crossword.setLayoutDirection(Qt.LeftToRight)
         self.crossword.setStyleSheet(u"")
+        self.crossword.setEditTriggers(QAbstractItemView.AnyKeyPressed)
         self.crossword.setWordWrap(False)
         self.crossword.setRowCount(10)
         self.crossword.setColumnCount(21)
@@ -64,21 +86,30 @@ class Ui_MainWindow(object):
         self.crossword.horizontalHeader().setHighlightSections(True)
         self.crossword.verticalHeader().setDefaultSectionSize(52)
 
-        self.verticalLayout_2.addWidget(self.crossword)
+        self.verticalLayout_3.addWidget(self.crossword)
 
-        self.definitions = QListWidget(self.centralwidget)
+        self.definitions = QListWidget(self.page_2)
         self.definitions.setObjectName(u"definitions")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.definitions.sizePolicy().hasHeightForWidth())
         self.definitions.setSizePolicy(sizePolicy)
-        font1 = QFont()
-        font1.setFamilies([u"Monospace"])
-        font1.setPointSize(16)
-        self.definitions.setFont(font1)
+        font2 = QFont()
+        font2.setFamilies([u"Monospace"])
+        font2.setPointSize(16)
+        self.definitions.setFont(font2)
 
-        self.verticalLayout_2.addWidget(self.definitions)
+        self.verticalLayout_3.addWidget(self.definitions)
+
+        self.check_answer_button = QPushButton(self.page_2)
+        self.check_answer_button.setObjectName(u"check_answer_button")
+
+        self.verticalLayout_3.addWidget(self.check_answer_button)
+
+        self.crossword_pages.addWidget(self.page_2)
+
+        self.verticalLayout_2.addWidget(self.crossword_pages)
 
 
         self.verticalLayout.addLayout(self.verticalLayout_2)
@@ -93,10 +124,10 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.solution_input)
 
-        self.pushButton = QPushButton(self.centralwidget)
-        self.pushButton.setObjectName(u"pushButton")
+        self.select_wordlist_button = QPushButton(self.centralwidget)
+        self.select_wordlist_button.setObjectName(u"select_wordlist_button")
 
-        self.verticalLayout.addWidget(self.pushButton)
+        self.verticalLayout.addWidget(self.select_wordlist_button)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
@@ -109,18 +140,23 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
+        self.crossword_pages.setCurrentIndex(0)
+
+
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        self.no_crossword_label.setText(QCoreApplication.translate("MainWindow", u"Select a wordlist and create a crossword", None))
         self.title.setText(QCoreApplication.translate("MainWindow", u"Crossword based on wordlist <wordlist>", None))
 
         __sortingEnabled = self.crossword.isSortingEnabled()
         self.crossword.setSortingEnabled(False)
         self.crossword.setSortingEnabled(__sortingEnabled)
 
+        self.check_answer_button.setText(QCoreApplication.translate("MainWindow", u"Check your answer", None))
         self.generate_button.setText(QCoreApplication.translate("MainWindow", u"New crossword", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Select wordlist", None))
+        self.select_wordlist_button.setText(QCoreApplication.translate("MainWindow", u"Select wordlist", None))
     # retranslateUi
 
