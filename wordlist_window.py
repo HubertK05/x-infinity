@@ -1,5 +1,7 @@
 import asyncio
-from typing import List, Optional
+import json
+import random
+from typing import Dict, List, Optional
 import PySide6.QtWidgets as widgets
 
 import data
@@ -135,18 +137,18 @@ class WordlistWindow(widgets.QMainWindow):
         self.__update_entry_ui()
 
     def __on_generate_wordlist(self):
-        entries = data.generate_wordlist()
+        entries = self.db.get_full_sample()
         wordlist = Wordlist("Generated", entries)
         self.db.create(wordlist.name)
         self.db.update(wordlist.name, wordlist)
         self.__update_wordlists_ui()
 
     def __on_generate_definitions(self):
-        words = [entry.word for entry in self.selected_wordlist.entries]
-        definitions = asyncio.run(data.get_multiple_definitions(words))
-        for word, definition in zip(words, definitions):
-            if definition:
-                self.selected_wordlist.update(Entry(word, definition))
+        words = set([entry.word for entry in self.selected_wordlist.entries])
+        entries = self.db.get_full_sample()
+        matching_entries = [entry for entry in entries if entry.word in words]
+        for entry in matching_entries:
+            self.selected_wordlist.update(entry)
         self.selected_entry = None
         self.__persist_wordlist()
         self.__update_entry_ui()

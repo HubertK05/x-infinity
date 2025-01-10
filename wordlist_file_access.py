@@ -1,5 +1,5 @@
 import json
-from typing import List
+from typing import Dict, List
 
 from entry import Entry
 import os
@@ -40,6 +40,11 @@ class WordlistFileAccess:
 
     def list_wordlists(self) -> List[str]:
         return [file.split('.')[0] for file in os.listdir('data') if file.endswith('.json')]
+
+    def get_full_data(self) -> List[Entry]:
+        with open("full_data.json") as file:
+            entries: List[Dict[str, str]] = json.load(file)
+        return [Entry(entry["word"], entry["definition"]) for entry in entries]
 
 
 def as_json(entries: List[Entry]):

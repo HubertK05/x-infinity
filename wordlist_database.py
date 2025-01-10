@@ -42,3 +42,6 @@ class WordlistDatabase:
 
     def list_names(self):
         return self.__file_access.list_wordlists()
+
+    def get_full_sample(self):
+        return self.__file_access.get_full_data()
