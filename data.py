@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup, SoupStrainer
 import requests
 
 from entry import Entry
-from wordlist_file_access import as_json
 
 WORD_SOURCE = "https://raw.githubusercontent.com/MichaelWehar/Public-Domain-Word-Lists/master/5000-more-common.txt"
 
@@ -42,9 +41,10 @@ class WordScraper:
 
 def main():
     results = WordScraper().download_full_sample()
+    results = [entry.as_json() for entry in results]
 
     with open('full_data.json', 'w') as file:
-        file.write(json.dumps(as_json(results), indent=4))
+        file.write(json.dumps(results, indent=4))
 
 
 if __name__ == "__main__":

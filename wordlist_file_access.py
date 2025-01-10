@@ -7,17 +7,13 @@ import os
 from util import InvalidWordlistNameError
 
 
-def validate_wordlist_name(name: str):
-    if any([char in name for char in ['/', '\\', '.']]):
-        raise InvalidWordlistNameError("Wordlist cannot contain '/', '\\' or '.'")
-
-
 class WordlistFileAccess:
-    def __init__(self):
-        pass
+    def __validate_wordlist_name(self, name: str):
+        if any([char in name for char in ['/', '\\', '.']]):
+            raise InvalidWordlistNameError("Wordlist cannot contain '/', '\\' or '.'")
 
     def get_wordlist(self, name: str) -> List[Entry]:
-        validate_wordlist_name(name)
+        self.__validate_wordlist_name(name)
 
         with open(f'data/{name}.json') as file:
             raw_data = file.read()
@@ -28,13 +24,14 @@ class WordlistFileAccess:
         return [Entry(entry['word'], entry['definition']) for entry in data]
 
     def set_wordlist(self, name: str, wordlist: List[Entry]):
-        validate_wordlist_name(name)
+        self.__validate_wordlist_name(name)
+        entries = [entry.as_json() for entry in wordlist]
 
         with open(f'data/{name}.json', 'w') as file:
-            file.write(json.dumps(as_json(wordlist), indent=4))
+            file.write(json.dumps(entries, indent=4))
 
     def delete_wordlist(self, name: str):
-        validate_wordlist_name(name)
+        self.__validate_wordlist_name(name)
 
         os.remove(f'data/{name}.json')
 
@@ -45,7 +42,3 @@ class WordlistFileAccess:
         with open("full_data.json") as file:
             entries: List[Dict[str, str]] = json.load(file)
         return [Entry(entry["word"], entry["definition"]) for entry in entries]
-
-
-def as_json(entries: List[Entry]):
-    return [{"word": entry.word, "definition": entry.definition} for entry in entries]
