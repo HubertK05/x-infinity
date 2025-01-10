@@ -1,6 +1,8 @@
+import asyncio
 from typing import List, Optional
 import PySide6.QtWidgets as widgets
 
+import data
 from entry import Entry
 from new_wordlist_ui import Ui_new_wordlist_dialog
 from update_entry_ui import Ui_update_entry_dialog
@@ -37,6 +39,8 @@ class WordlistWindow(widgets.QMainWindow):
         self.ui.update_wordlist_button.clicked.connect(self.__on_update_wordlist_dialog)
         self.ui.delete_wordlist_button.clicked.connect(self.__delete_wordlist)
         self.ui.use_wordlist_button.clicked.connect(self.__on_use_wordlist)
+        self.ui.generate_wordlist_button.clicked.connect(self.__on_generate_wordlist)
+        self.ui.generate_definitions_button.clicked.connect(self.__on_generate_definitions)
 
     def create_wordlist(self, name: str):
         self.db.create(name)
@@ -57,9 +61,6 @@ class WordlistWindow(widgets.QMainWindow):
         self.__update_words_ui()
         self.__update_wordlists_ui()
 
-    def __save_wordlist(self, name: str):
-        pass
-
     def __on_use_wordlist(self):
         self.parent().selected_wordlist = self.selected_wordlist
 
@@ -73,12 +74,12 @@ class WordlistWindow(widgets.QMainWindow):
 
     def __update_wordlists_ui(self):
         self.ui.wordlist_pages.setCurrentIndex(0)
+        self.ui.word_pages.setCurrentIndex(0)
         self.ui.wordlists.clear()
         for name in self.db.list_names():
             self.ui.wordlists.addItem(name)
 
     def __on_wordlist_clicked(self, item: widgets.QListWidgetItem):
-        # TODO: Wordlists shouldn't be filtered and then indexed
         self.selected_wordlist = self.db.get(item.text())
         self.__update_words_ui()
 
@@ -131,6 +132,23 @@ class WordlistWindow(widgets.QMainWindow):
         self.__persist_wordlist()
         self.selected_entry = None
         self.__update_words_ui()
+        self.__update_entry_ui()
+
+    def __on_generate_wordlist(self):
+        entries = data.generate_wordlist()
+        wordlist = Wordlist("Generated", entries)
+        self.db.create(wordlist.name)
+        self.db.update(wordlist.name, wordlist)
+        self.__update_wordlists_ui()
+
+    def __on_generate_definitions(self):
+        words = [entry.word for entry in self.selected_wordlist.entries]
+        definitions = asyncio.run(data.get_multiple_definitions(words))
+        for word, definition in zip(words, definitions):
+            if definition:
+                self.selected_wordlist.update(Entry(word, definition))
+        self.selected_entry = None
+        self.__persist_wordlist()
         self.__update_entry_ui()
 
 
@@ -190,6 +208,6 @@ class UpdateWordlistDialog(widgets.QDialog):
     def __on_accepted(self):
         try:
             new_wordlist = Wordlist(self.ui.new_name.text(), self.parent().selected_wordlist.entries)
-            self.parent().update_wordlist(self.parent().selected_wordlist.name, new_wordlist)
+            self.parent().db.update(self.parent().selected_wordlist.name, new_wordlist)
         except (ConflictingEntryNameError, EmptyWordlistNameError) as e:
             widgets.QMessageBox.critical(self, "Error", str(e))
