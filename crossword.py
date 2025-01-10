@@ -53,3 +53,11 @@ class Crossword:
     def fix_letter(self, entry_idx: int, letter_idx: int):
         self.state[entry_idx][1][letter_idx].letter = self.entries[entry_idx][1].word[letter_idx]
         self.state[entry_idx][1][letter_idx].fixed = True
+
+    def check(self) -> List[Tuple[int, int, bool]]:
+        res = []
+        for i in range(len(self.__entries)):
+            for j in range(len(self.__entries[i][1].word)):
+                if self.state[i][1][j].letter:
+                    res.append((i, j + self.entries[i][0], self.state[i][1][j].letter == self.__entries[i][1].word[j]))
+        return res

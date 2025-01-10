@@ -87,3 +87,18 @@ def test_crossword_fix_letter():
     assert crossword.get_letter(0, 2) == Letter("", False)
     crossword.fix_letter(0, 2)
     assert crossword.get_letter(0, 2) == Letter("r", True)
+
+
+def test_crossword_check():
+    crossword = Crossword(2, [(0, Entry("word", "test")), (2, Entry("another", "test"))])
+    crossword.set_letter(0, 0, "w")
+    crossword.set_letter(0, 1, "r")
+    crossword.set_letter(1, 2, "o")
+    crossword.set_letter(1, 3, "r")
+    check_results = crossword.check()
+    assert check_results == [
+        (0, 0, True),
+        (0, 1, False),
+        (1, 4, True),
+        (1, 5, False)
+    ]
