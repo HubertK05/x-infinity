@@ -113,14 +113,13 @@ class CrosswordWindow(widgets.QMainWindow):
             return
 
     def __refresh_crossword(self):
-        self.__uncheck()
         self.ui.crossword_pages.setCurrentIndex(1)
         entries: List[Tuple[int, Entry]] = self.__crossword.entries
         width = self.__crossword.width()
         self.ui.crossword.clear()
         self.ui.crossword.setRowCount(len(entries))
         self.ui.crossword.setColumnCount(width)
-        self.__repaint_crossword()
+        self.__uncheck()
 
     def __repaint_crossword(self):
         for row, (offset, entry) in enumerate(self.__crossword.entries):
