@@ -60,7 +60,7 @@ class WordlistWindow(widgets.QMainWindow):
         dialog.exec()
 
     def __on_update_wordlist_dialog(self):
-        dialog = UpdateWordlistDialog(self)
+        dialog = UpdateWordlistDialog(self.selected_wordlist.name, self)
         dialog.exec()
 
     def __update_wordlists_ui(self):
@@ -114,8 +114,7 @@ class WordlistWindow(widgets.QMainWindow):
         dialog.exec()
 
     def __on_update_entry_dialog(self):
-        # TODO: UpdateEntryDialog has a placeholder for entry name. Remove it.
-        dialog = UpdateEntryDialog(self)
+        dialog = UpdateEntryDialog(self.selected_entry.word, self)
         dialog.exec()
 
     def __on_delete_entry(self):
@@ -157,11 +156,12 @@ class NewEntryDialog(widgets.QDialog):
 
 
 class UpdateEntryDialog(widgets.QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, word: str, parent=None):
         super().__init__(parent)
         self.ui = Ui_update_entry_dialog()
         self.ui.setupUi(self)
         self.ui.buttonBox.accepted.connect(self.__on_accepted)
+        self.ui.name.setText(f"Update entry \"{word}\"")
 
     def __on_accepted(self):
         try:
@@ -188,11 +188,12 @@ class CreateWordlistDialog(widgets.QDialog):
 
 
 class UpdateWordlistDialog(widgets.QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, name: str, parent=None):
         super().__init__(parent)
         self.ui = Ui_update_wordlist_dialog()
         self.ui.setupUi(self)
         self.ui.buttonBox.accepted.connect(self.__on_accepted)
+        self.ui.old_name.setText(f"Update wordlist \"{name}\"")
 
     def __on_accepted(self):
         try:
