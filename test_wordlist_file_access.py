@@ -20,3 +20,15 @@ def test_wordlist_database_delete_invalid_wordlist_name():
     db = WordlistFileAccess()
     with pytest.raises(InvalidWordlistNameError):
         db.delete_wordlist("/")
+
+
+def test_wordlist_database_rename_invalid_old_name():
+    db = WordlistFileAccess()
+    with pytest.raises(InvalidWordlistNameError):
+        db.rename_wordlist("/", "test")
+
+
+def test_wordlist_database_rename_invalid_name():
+    db = WordlistFileAccess()
+    with pytest.raises(InvalidWordlistNameError):
+        db.rename_wordlist("test", "/")

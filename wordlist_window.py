@@ -44,9 +44,8 @@ class WordlistWindow(widgets.QMainWindow):
         self.db.set_wordlist(Wordlist(name, []))
         self.__update_wordlists_ui()
 
-    def update_wordlist_name(self, old_name: str, wordlist: Wordlist):
-        self.db.delete_wordlist(old_name, wordlist)
-        self.db.set_wordlist(wordlist)
+    def rename_wordlist(self, old_name: str, new_name: str):
+        self.db.rename_wordlist(old_name, new_name)
         self.__update_wordlists_ui()
 
     def __delete_wordlist(self):
@@ -202,8 +201,6 @@ class UpdateWordlistDialog(widgets.QDialog):
 
     def __on_accepted(self):
         try:
-            new_wordlist = Wordlist(self.ui.new_name.text(), self.parent().selected_wordlist.entries)
-            self.parent().db.delete_wordlist(self.parent().selected_wordlist.name)
-            self.parent().db.set_wordlist(new_wordlist)
+            self.parent().rename_wordlist(self.parent().selected_wordlist.name, self.ui.new_name.text())
         except (ConflictingEntryNameError, EmptyWordlistNameError) as e:
             widgets.QMessageBox.critical(self, "Error", str(e))

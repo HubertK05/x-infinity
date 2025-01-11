@@ -33,8 +33,12 @@ class WordlistFileAccess:
 
     def delete_wordlist(self, name: str):
         self.__validate_wordlist_name(name)
-
         os.remove(f'data/{name}.json')
+
+    def rename_wordlist(self, old_name: str, name: str):
+        self.__validate_wordlist_name(name)
+        self.__validate_wordlist_name(old_name)
+        os.rename(f'data/{old_name}.json', f'data/{name}.json')
 
     def list_wordlists(self) -> List[str]:
         return [file.split('.')[0] for file in os.listdir('data') if file.endswith('.json')]
