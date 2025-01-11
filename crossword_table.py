@@ -9,6 +9,13 @@ GRAY = QColor(192, 192, 192)
 RED = QColor(255, 224, 224)
 GREEN = QColor(224, 255, 224)
 
+BACKSPACE_KEY = 16777219
+SPACE_KEY = 32
+LEFT_ARROW_KEY = 16777234
+UP_ARROW_KEY = 16777235
+RIGHT_ARROW_KEY = 16777236
+DOWN_ARROW_KEY = 16777237
+
 
 class CrosswordTable(widgets.QTableWidget):
     def __init__(self, crossword: Crossword, parent=None):
@@ -61,22 +68,53 @@ class CrosswordTable(widgets.QTableWidget):
         self.__refresh_ui()
 
     def keyPressEvent(self, event) -> None:
-        if self.__checking or not 65 <= event.key() <= 90:
+        if self.__checking:
             return
 
         indexes = self.selectedIndexes()
         if indexes:
             row, col = indexes[0].row(), indexes[0].column()
-            minimum = self.__backend.solution[row][0]
-            maximum = minimum + len(self.__backend.solution[row][1].word) - 1
-            if minimum <= col <= maximum and not self.__backend.get_letter(row, col).fixed:
-                letter = chr(event.key() + 32)
-                self.item(row, col).setText(letter)
-                self.__backend.set_letter(row, col, letter)
-            if col < maximum:
-                self.setCurrentCell(row, max(minimum, col + 1))
-            elif row < self.rowCount() - 1:
-                self.setCurrentCell(row + 1, self.__backend.solution[row + 1][0])
+        else:
+            return
+
+        key = event.key()
+        if 65 <= key <= 90:
+            self.__type_letter(row, col, chr(key))
+        elif key == SPACE_KEY:
+            self.__go_to_next(row, col)
+        elif key == BACKSPACE_KEY:
+            self.__remove_letter(row, col)
+        elif key == LEFT_ARROW_KEY:
+            self.setCurrentCell(row, max(0, col - 1))
+        elif key == RIGHT_ARROW_KEY:
+            self.setCurrentCell(row, min(self.columnCount() - 1, col + 1))
+        elif key == DOWN_ARROW_KEY:
+            self.setCurrentCell(min(self.rowCount() - 1, row + 1), col)
+        elif key == UP_ARROW_KEY:
+            self.setCurrentCell(max(0, row - 1), col)
+
+    def __type_letter(self, row: int, col: int, key: str):
+        minimum = self.__backend.solution[row][0]
+        maximum = minimum + len(self.__backend.solution[row][1].word) - 1
+        if minimum <= col <= maximum:
+            self.__set_letter(row, col, key.lower())
+        self.__go_to_next(row, col)
+
+    def __go_to_next(self, row: int, col: int):
+        minimum = self.__backend.solution[row][0]
+        maximum = minimum + len(self.__backend.solution[row][1].word) - 1
+        if col < maximum:
+            self.setCurrentCell(row, max(minimum, col + 1))
+        elif row < self.rowCount() - 1:
+            self.setCurrentCell(row + 1, self.__backend.solution[row + 1][0])
+
+    def __remove_letter(self, row: int, col: int):
+        self.__set_letter(row, col, "")
+
+    def __set_letter(self, row: int, col: int, letter: str):
+        if not self.__backend.get_letter(row, col).fixed:
+            self.__backend.set_letter(row, col, letter)
+            self.item(row, col).setText(letter)
 
     def __on_double_clicked(self, row: int, col: int):
         if self.__checking:
