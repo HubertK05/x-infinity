@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1211</width>
-    <height>809</height>
+    <width>1330</width>
+    <height>1099</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <item>
        <widget class="QStackedWidget" name="crossword_pages">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -42,6 +42,9 @@
          </layout>
         </widget>
         <widget class="QWidget" name="page_2">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
            <widget class="QLabel" name="title">
@@ -145,7 +148,7 @@
           <item>
            <widget class="QListWidget" name="definitions">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -182,12 +185,26 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="solution_input"/>
+     <widget class="QLineEdit" name="solution_input">
+      <property name="placeholderText">
+       <string>Solution word to base the crossword on...</string>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QPushButton" name="select_wordlist_button">
       <property name="text">
        <string>Select wordlist</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="selected_wordlist_label">
+      <property name="text">
+       <string>Selected wordlist: None</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </item>
@@ -198,7 +215,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1211</width>
+     <width>1330</width>
      <height>20</height>
     </rect>
    </property>

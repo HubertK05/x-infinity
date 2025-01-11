@@ -6,21 +6,118 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>923</width>
-    <height>462</height>
+    <width>981</width>
+    <height>558</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="0,0">
+      <item row="0" column="2">
+       <widget class="QLabel" name="selected_wordlist_title">
+        <property name="text">
+         <string>Selected wordlist</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="2">
-       <widget class="QStackedWidget" name="word_pages">
+       <widget class="QStackedWidget" name="wordlist_pages">
         <property name="currentIndex">
          <number>0</number>
+        </property>
+        <widget class="QWidget" name="wordlist_not_selected">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QLabel" name="wordlist_not_selected_label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Select a wordlist first</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="wordlist_selected">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QListWidget" name="wordlist"/>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinimumSize</enum>
+            </property>
+            <item>
+             <widget class="QPushButton" name="use_wordlist_button">
+              <property name="text">
+               <string>Use this wordlist</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="update_wordlist_button">
+              <property name="text">
+               <string>Update wordlist</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="delete_wordlist_button">
+              <property name="text">
+               <string>Delete wordlist</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="generate_definitions_button">
+              <property name="text">
+               <string>Generate definitions</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="new_entry_button">
+              <property name="text">
+               <string>New entry</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="wordlist_title">
+        <property name="text">
+         <string>Your wordlists</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLabel" name="selected_entry_title">
+        <property name="text">
+         <string>Selected word</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QStackedWidget" name="word_pages">
+        <property name="currentIndex">
+         <number>1</number>
         </property>
         <widget class="QWidget" name="entry_not_selected">
          <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -37,140 +134,109 @@
          </layout>
         </widget>
         <widget class="QWidget" name="entry_selected">
-         <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <widget class="QListWidget" name="entry"/>
+           <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <property name="sizeConstraint">
+               <enum>QLayout::SetMinimumSize</enum>
+              </property>
+              <item>
+               <widget class="QLabel" name="word_label">
+                <property name="text">
+                 <string>Word: &lt;word&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="definition_label">
+                <property name="text">
+                 <string>Definition: &lt;definition&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QPushButton" name="edit_entry_button">
+                <property name="text">
+                 <string>Edit entry</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="delete_entry_button">
+                <property name="text">
+                 <string>Delete entry</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QStackedWidget" name="wordlist_pages">
+      <item row="1" column="0">
+       <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
          <number>0</number>
         </property>
-        <widget class="QWidget" name="wordlist_not_selected">
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <widget class="QWidget" name="page">
+         <layout class="QVBoxLayout" name="verticalLayout_8">
           <item>
-           <widget class="QLabel" name="wordlist_not_selected_label">
-            <property name="text">
-             <string>Select a wordlist first</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <item>
+             <widget class="QListWidget" name="wordlists"/>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QPushButton" name="generate_wordlist_button">
+                <property name="text">
+                 <string>Generate</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="new_wordlist_button">
+                <property name="text">
+                 <string>New wordlist</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="wordlist_selected">
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <item>
-           <widget class="QListWidget" name="wordlist"/>
-          </item>
-         </layout>
-        </widget>
+        <widget class="QWidget" name="page_2"/>
        </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="selected_entry_title">
-        <property name="text">
-         <string>Selected word</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QPushButton" name="edit_entry_button">
-          <property name="text">
-           <string>Edit entry</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="delete_entry_button">
-          <property name="text">
-           <string>Delete entry</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="1" column="0">
-       <widget class="QListWidget" name="wordlists"/>
-      </item>
-      <item row="2" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QPushButton" name="use_wordlist_button">
-          <property name="text">
-           <string>Use this wordlist</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="update_wordlist_button">
-          <property name="text">
-           <string>Update wordlist</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="delete_wordlist_button">
-          <property name="text">
-           <string>Delete wordlist</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="generate_definitions_button">
-          <property name="text">
-           <string>Generate definitions</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="new_entry_button">
-          <property name="text">
-           <string>New entry</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="wordlist_title">
-        <property name="text">
-         <string>Your wordlists</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="selected_wordlist_title">
-        <property name="text">
-         <string>Selected wordlist</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QPushButton" name="new_wordlist_button">
-          <property name="text">
-           <string>New wordlist</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="generate_wordlist_button">
-          <property name="text">
-           <string>Generate</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
       </item>
      </layout>
     </item>
@@ -181,7 +247,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>923</width>
+     <width>981</width>
      <height>20</height>
     </rect>
    </property>

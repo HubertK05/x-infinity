@@ -34,6 +34,7 @@ class CrosswordWindow(widgets.QMainWindow):
             crossword = gen.generate(self.ui.solution_input.text())
             self.ui.crossword.new_crossword(crossword)
             self.__update_definition_ui(crossword.solution)
+            self.ui.crossword_pages.setCurrentIndex(1)
         except CrosswordGenerationError as e:
             widgets.QMessageBox.critical(self, "Error", str(e))
             return

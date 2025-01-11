@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1211, 809)
+        MainWindow.resize(1330, 1099)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
@@ -51,6 +51,7 @@ class Ui_MainWindow(object):
         self.crossword_pages.addWidget(self.page)
         self.page_2 = QWidget()
         self.page_2.setObjectName(u"page_2")
+        self.page_2.setEnabled(True)
         self.verticalLayout_3 = QVBoxLayout(self.page_2)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.title = QLabel(self.page_2)
@@ -91,7 +92,7 @@ class Ui_MainWindow(object):
 
         self.definitions = QListWidget(self.page_2)
         self.definitions.setObjectName(u"definitions")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.definitions.sizePolicy().hasHeightForWidth())
@@ -131,10 +132,16 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.select_wordlist_button)
 
+        self.selected_wordlist_label = QLabel(self.centralwidget)
+        self.selected_wordlist_label.setObjectName(u"selected_wordlist_label")
+        self.selected_wordlist_label.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout.addWidget(self.selected_wordlist_label)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1211, 20))
+        self.menubar.setGeometry(QRect(0, 0, 1330, 20))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -142,7 +149,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.crossword_pages.setCurrentIndex(1)
+        self.crossword_pages.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -159,6 +166,8 @@ class Ui_MainWindow(object):
 
         self.check_answer_button.setText(QCoreApplication.translate("MainWindow", u"Check your answer", None))
         self.generate_button.setText(QCoreApplication.translate("MainWindow", u"New crossword", None))
+        self.solution_input.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Solution word to base the crossword on...", None))
         self.select_wordlist_button.setText(QCoreApplication.translate("MainWindow", u"Select wordlist", None))
+        self.selected_wordlist_label.setText(QCoreApplication.translate("MainWindow", u"Selected wordlist: None", None))
     # retranslateUi
 

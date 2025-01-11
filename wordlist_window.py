@@ -54,6 +54,7 @@ class WordlistWindow(widgets.QMainWindow):
 
     def __on_use_wordlist(self):
         self.parent().selected_wordlist = self.selected_wordlist
+        self.parent().ui.selected_wordlist_label.setText(f"Selected wordlist: {self.selected_wordlist.name}")
 
     def __on_new_wordlist_dialog(self):
         dialog = CreateWordlistDialog(self)
@@ -101,11 +102,10 @@ class WordlistWindow(widgets.QMainWindow):
 
     def __update_entry_ui(self):
         if self.selected_entry:
-            self.ui.word_pages.setCurrentIndex(1)
-            self.ui.entry.clear()
             entry = self.selected_entry
-            self.ui.entry.addItem(entry.word)
-            self.ui.entry.addItem(entry.definition)
+            self.ui.word_label.setText(entry.word)
+            self.ui.definition_label.setText(entry.definition)
+            self.ui.word_pages.setCurrentIndex(1)
         else:
             self.ui.word_pages.setCurrentIndex(0)
 
