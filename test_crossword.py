@@ -9,7 +9,7 @@ def test_crossword_init():
     entry = Entry("word", "definition")
     crossword = Crossword(0, [(1, entry)])
     assert crossword.solution_column == 0
-    assert crossword.entries == [(1, entry)]
+    assert crossword.solution == [(1, entry)]
     assert crossword.state == [(
         1,
         [
@@ -83,18 +83,18 @@ def test_crossword_set_fixed_letter_does_not_change_it():
 
 
 def test_crossword_fix_letter():
-    crossword = Crossword(0, [(0, Entry("word", "meaning"))])
-    assert crossword.get_letter(0, 2) == Letter("", False)
-    crossword.fix_letter(0, 2)
-    assert crossword.get_letter(0, 2) == Letter("r", True)
+    crossword = Crossword(0, [(1, Entry("word", "meaning"))])
+    assert crossword.get_letter(0, 3) == Letter("", False)
+    crossword.fix_letter(0, 3)
+    assert crossword.get_letter(0, 3) == Letter("r", True)
 
 
 def test_crossword_check():
     crossword = Crossword(2, [(0, Entry("word", "test")), (2, Entry("another", "test"))])
     crossword.set_letter(0, 0, "w")
     crossword.set_letter(0, 1, "r")
-    crossword.set_letter(1, 2, "o")
-    crossword.set_letter(1, 3, "r")
+    crossword.set_letter(1, 4, "o")
+    crossword.set_letter(1, 5, "r")
     check_results = crossword.check()
     assert check_results == [
         (0, 0, True),

@@ -26,7 +26,7 @@ class CrosswordTable(widgets.QTableWidget):
                     self.setItem(row, col, widgets.QTableWidgetItem(""))
                     item = self.item(row, col)
                 if minimum <= col <= maximum:
-                    if self.__backend.get_letter(row, col - minimum).fixed:
+                    if self.__backend.get_letter(row, col).fixed:
                         item.setBackground(QBrush(QColor(224, 255, 224)))
                     elif col == self.__backend.solution_column:
                         item.setBackground(QBrush(QColor(192, 192, 192)))
@@ -62,10 +62,10 @@ class CrosswordTable(widgets.QTableWidget):
             row, col = indexes[0].row(), indexes[0].column()
             minimum = self.__backend.entries[row][0]
             maximum = minimum + len(self.__backend.entries[row][1].word) - 1
-            if minimum <= col <= maximum and not self.__backend.get_letter(row, col - minimum).fixed:
+            if minimum <= col <= maximum and not self.__backend.get_letter(row, col).fixed:
                 letter = chr(event.key() + 32)
                 self.item(row, col).setText(letter)
-                self.__backend.set_letter(row, col - minimum, letter)
+                self.__backend.set_letter(row, col, letter)
             if col < maximum:
                 self.setCurrentCell(row, max(minimum, col + 1))
             elif row < self.rowCount() - 1:
@@ -79,8 +79,7 @@ class CrosswordTable(widgets.QTableWidget):
         minimum = entries[row][0]
         maximum = minimum + len(entries[row][1].word) - 1
         if minimum <= col <= maximum:
-            letter_idx = col - minimum
-            self.__backend.fix_letter(row, letter_idx)
-            letter = self.__backend.get_letter(row, letter_idx)
+            self.__backend.fix_letter(row, col)
+            letter = self.__backend.get_letter(row, col)
             self.item(row, col).setText(letter.letter)
             self.item(row, col).setBackground(QBrush(QColor(224, 255, 224)))

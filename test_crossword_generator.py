@@ -55,7 +55,7 @@ def test_generate_crossword_using_random_matching(monkeypatch):
 
     # This is the only solution
     assert result.solution_column == 2
-    assert result.entries == [
+    assert result.solution == [
         (0, the_entry),
         (2, a_entry),
         (0, cat_entry),

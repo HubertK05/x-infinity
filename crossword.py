@@ -14,50 +14,54 @@ class Crossword:
             raise InvalidCrosswordError("Entry column cannot be negative")
 
         self.__solution_column = solution_column
-        self.__entries = entries
+        self.__solution = entries
         self.state = [(offset, [Letter("", False) for _ in range(len(entry.word))]) for offset, entry in entries]
 
     @property
-    def entries(self) -> list[Tuple[int, Entry]]:
-        return self.__entries
+    def solution(self) -> list[Tuple[int, Entry]]:
+        return self.__solution
 
     @property
     def solution_column(self) -> int:
         return self.__solution_column
 
     def width(self) -> int:
-        return max([entry[0] + len(entry[1].word) for entry in self.__entries])
+        return max([entry[0] + len(entry[1].word) for entry in self.__solution])
 
     def display_str(self) -> str:
         res = ""
-        for entry in self.__entries:
+        for entry in self.__solution:
             res += " " * entry[0] + f'{entry[1].word}\n'
         return res
 
     def display_unsolved(self) -> str:
         res = ""
         definitions = ""
-        for i, entry in enumerate(self.__entries):
+        for i, entry in enumerate(self.__solution):
             res += f'{i+1}.' + " " * entry[0] + f'{"_" * len(entry[1].word)}\n'
             definitions += f'{i+1}. {entry[1].definition}\n'
         return res + definitions
 
-    def get_letter(self, entry_idx: int, letter_idx: int) -> Letter:
-        return self.state[entry_idx][1][letter_idx]
+    def get_letter(self, row: int, col: int) -> Letter:
+        offset = self.__solution[row][0]
+        return self.state[row][1][col - offset]
 
-    def set_letter(self, entry_idx: int, letter_idx: int, letter: int):
-        target = self.state[entry_idx][1][letter_idx]
+    def set_letter(self, row: int, col: int, letter: int):
+        offset = self.__solution[row][0]
+        target = self.state[row][1][col - offset]
         if not target.fixed:
             target.letter = letter
 
-    def fix_letter(self, entry_idx: int, letter_idx: int):
-        self.state[entry_idx][1][letter_idx].letter = self.entries[entry_idx][1].word[letter_idx]
-        self.state[entry_idx][1][letter_idx].fixed = True
+    def fix_letter(self, row: int, col: int):
+        offset = self.__solution[row][0]
+        letter_idx = col - offset
+        self.state[row][1][letter_idx].letter = self.__solution[row][1].word[letter_idx]
+        self.state[row][1][letter_idx].fixed = True
 
     def check(self) -> List[Tuple[int, int, bool]]:
         res = []
-        for i in range(len(self.__entries)):
-            for j in range(len(self.__entries[i][1].word)):
+        for i in range(len(self.__solution)):
+            for j in range(len(self.__solution[i][1].word)):
                 if self.state[i][1][j].letter:
-                    res.append((i, j + self.entries[i][0], self.state[i][1][j].letter == self.__entries[i][1].word[j]))
+                    res.append((i, j + self.__solution[i][0], self.state[i][1][j].letter == self.__solution[i][1].word[j]))
         return res
