@@ -1,17 +1,13 @@
-import asyncio
-import json
-import random
-from typing import Dict, List, Optional
+from typing import List, Optional
 import PySide6.QtWidgets as widgets
 
-import data
 from entry import Entry
 from new_wordlist_ui import Ui_new_wordlist_dialog
 from update_entry_ui import Ui_update_entry_dialog
 from update_wordlist_ui import Ui_update_wordlist_dialog
 from util import ConflictingEntryNameError, EmptyEntryError, EmptyWordlistNameError
 from wordlist import Wordlist
-from wordlist_database import WordlistDatabase
+from wordlist_file_access import WordlistFileAccess
 from wordlists_ui import Ui_MainWindow
 from new_entry_ui import Ui_new_entry_dialog
 
@@ -23,7 +19,7 @@ class WordlistWindow(widgets.QMainWindow):
         self.wordlists: List[Wordlist] = []
         self.selected_wordlist: Optional[Wordlist] = None
         self.selected_entry: Optional[Entry] = None
-        self.db = WordlistDatabase()
+        self.db = WordlistFileAccess()
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -45,18 +41,16 @@ class WordlistWindow(widgets.QMainWindow):
         self.ui.generate_definitions_button.clicked.connect(self.__on_generate_definitions)
 
     def create_wordlist(self, name: str):
-        self.db.create(name)
+        self.db.set_wordlist(Wordlist(name, []))
         self.__update_wordlists_ui()
 
     def update_wordlist_name(self, old_name: str, wordlist: Wordlist):
-        self.db.update(old_name, wordlist)
+        self.db.delete_wordlist(old_name, wordlist)
+        self.db.set_wordlist(wordlist)
         self.__update_wordlists_ui()
 
-    def __persist_wordlist(self):
-        self.db.update(self.selected_wordlist.name, self.selected_wordlist)
-
     def __delete_wordlist(self):
-        self.db.delete(self.selected_wordlist.name)
+        self.db.delete_wordlist(self.selected_wordlist.name)
         self.selected_entry = None
         self.selected_wordlist = None
         self.__update_entry_ui()
@@ -78,16 +72,16 @@ class WordlistWindow(widgets.QMainWindow):
         self.ui.wordlist_pages.setCurrentIndex(0)
         self.ui.word_pages.setCurrentIndex(0)
         self.ui.wordlists.clear()
-        for name in self.db.list_names():
+        for name in self.db.list_wordlists():
             self.ui.wordlists.addItem(name)
 
     def __on_wordlist_clicked(self, item: widgets.QListWidgetItem):
-        self.selected_wordlist = self.db.get(item.text())
+        self.selected_wordlist = self.db.get_wordlist(item.text())
         self.__update_words_ui()
 
     def add_entry(self, entry: Entry):
         self.selected_wordlist.add(entry)
-        self.__persist_wordlist()
+        self.db.set_wordlist(self.selected_wordlist)
         self.__update_words_ui()
 
     def __update_words_ui(self):
@@ -106,7 +100,7 @@ class WordlistWindow(widgets.QMainWindow):
 
     def update_entry(self, entry: Entry):
         self.selected_wordlist.update(entry)
-        self.__persist_wordlist()
+        self.db.set_wordlist(self.selected_wordlist)
         self.selected_entry = entry
         self.__update_entry_ui()
 
@@ -131,26 +125,25 @@ class WordlistWindow(widgets.QMainWindow):
 
     def __on_delete_entry(self):
         self.selected_wordlist.remove(self.selected_entry.word)
-        self.__persist_wordlist()
+        self.db.set_wordlist(self.selected_wordlist)
         self.selected_entry = None
         self.__update_words_ui()
         self.__update_entry_ui()
 
     def __on_generate_wordlist(self):
-        entries = self.db.get_full_sample()
+        entries = self.db.get_full_data()
         wordlist = Wordlist("Generated", entries)
-        self.db.create(wordlist.name)
-        self.db.update(wordlist.name, wordlist)
+        self.db.set_wordlist(wordlist)
         self.__update_wordlists_ui()
 
     def __on_generate_definitions(self):
         words = set([entry.word for entry in self.selected_wordlist.entries])
-        entries = self.db.get_full_sample()
+        entries = self.db.get_full_data()
         matching_entries = [entry for entry in entries if entry.word in words]
         for entry in matching_entries:
             self.selected_wordlist.update(entry)
         self.selected_entry = None
-        self.__persist_wordlist()
+        self.db.set_wordlist(self.selected_wordlist)
         self.__update_entry_ui()
 
 
@@ -210,6 +203,7 @@ class UpdateWordlistDialog(widgets.QDialog):
     def __on_accepted(self):
         try:
             new_wordlist = Wordlist(self.ui.new_name.text(), self.parent().selected_wordlist.entries)
-            self.parent().db.update(self.parent().selected_wordlist.name, new_wordlist)
+            self.parent().db.delete_wordlist(self.parent().selected_wordlist.name)
+            self.parent().db.set_wordlist(new_wordlist)
         except (ConflictingEntryNameError, EmptyWordlistNameError) as e:
             widgets.QMessageBox.critical(self, "Error", str(e))

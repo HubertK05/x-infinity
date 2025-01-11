@@ -5,6 +5,7 @@ from entry import Entry
 import os
 
 from util import InvalidWordlistNameError
+from wordlist import Wordlist
 
 
 class WordlistFileAccess:
@@ -12,7 +13,7 @@ class WordlistFileAccess:
         if any([char in name for char in ['/', '\\', '.']]):
             raise InvalidWordlistNameError("Wordlist cannot contain '/', '\\' or '.'")
 
-    def get_wordlist(self, name: str) -> List[Entry]:
+    def get_wordlist(self, name: str) -> Wordlist:
         self.__validate_wordlist_name(name)
 
         with open(f'data/{name}.json') as file:
@@ -21,13 +22,13 @@ class WordlistFileAccess:
                 data = []
             else:
                 data = json.loads(raw_data)
-        return [Entry(entry['word'], entry['definition']) for entry in data]
+        return Wordlist(name, [Entry(entry['word'], entry['definition']) for entry in data])
 
-    def set_wordlist(self, name: str, wordlist: List[Entry]):
-        self.__validate_wordlist_name(name)
-        entries = [entry.as_json() for entry in wordlist]
+    def set_wordlist(self, wordlist: Wordlist):
+        self.__validate_wordlist_name(wordlist.name)
+        entries = [entry.as_json() for entry in wordlist.entries]
 
-        with open(f'data/{name}.json', 'w') as file:
+        with open(f'data/{wordlist.name}.json', 'w') as file:
             file.write(json.dumps(entries, indent=4))
 
     def delete_wordlist(self, name: str):
