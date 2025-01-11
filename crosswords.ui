@@ -20,7 +20,7 @@
       <item>
        <widget class="QStackedWidget" name="crossword_pages">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -54,7 +54,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QTableWidget" name="crossword">
+           <widget class="CrosswordTable" name="crossword">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -71,7 +71,7 @@
              <string notr="true"/>
             </property>
             <property name="editTriggers">
-             <set>QAbstractItemView::AnyKeyPressed</set>
+             <set>QAbstractItemView::NoEditTriggers</set>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -156,6 +156,9 @@
               <pointsize>16</pointsize>
              </font>
             </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
            </widget>
           </item>
           <item>
@@ -202,6 +205,13 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CrosswordTable</class>
+   <extends>QTableWidget</extends>
+   <header>crossword_table.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

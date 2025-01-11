@@ -18,8 +18,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHeaderView, QLabel,
     QLineEdit, QListWidget, QListWidgetItem, QMainWindow,
     QMenuBar, QPushButton, QSizePolicy, QStackedWidget,
-    QStatusBar, QTableWidget, QTableWidgetItem, QVBoxLayout,
-    QWidget)
+    QStatusBar, QTableWidgetItem, QVBoxLayout, QWidget)
+
+from crossword_table import CrosswordTable
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -58,7 +59,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addWidget(self.title)
 
-        self.crossword = QTableWidget(self.page_2)
+        self.crossword = CrosswordTable(self.page_2)
         if (self.crossword.columnCount() < 21):
             self.crossword.setColumnCount(21)
         if (self.crossword.rowCount() < 10):
@@ -77,7 +78,7 @@ class Ui_MainWindow(object):
         self.crossword.setFont(font1)
         self.crossword.setLayoutDirection(Qt.LeftToRight)
         self.crossword.setStyleSheet(u"")
-        self.crossword.setEditTriggers(QAbstractItemView.AnyKeyPressed)
+        self.crossword.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.crossword.setWordWrap(False)
         self.crossword.setRowCount(10)
         self.crossword.setColumnCount(21)
@@ -99,6 +100,7 @@ class Ui_MainWindow(object):
         font2.setFamilies([u"Monospace"])
         font2.setPointSize(16)
         self.definitions.setFont(font2)
+        self.definitions.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         self.verticalLayout_3.addWidget(self.definitions)
 
@@ -140,7 +142,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.crossword_pages.setCurrentIndex(0)
+        self.crossword_pages.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)

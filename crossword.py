@@ -18,7 +18,7 @@ class Crossword:
         self.state = [(offset, [Letter("", False) for _ in range(len(entry.word))]) for offset, entry in entries]
 
     @property
-    def entries(self) -> list[(int, Entry)]:
+    def entries(self) -> list[Tuple[int, Entry]]:
         return self.__entries
 
     @property
