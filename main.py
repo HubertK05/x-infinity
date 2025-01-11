@@ -1,3 +1,4 @@
+import sys
 from typing import List, Optional, Tuple
 import PySide6.QtWidgets as widgets
 from crossword_generator import CrosswordGenerator
@@ -48,12 +49,12 @@ class CrosswordWindow(widgets.QMainWindow):
         self.wordlist_window.show()
 
 
-def main():
-    app = widgets.QApplication([])
+def main(argv: list[str]):
+    app = widgets.QApplication(argv)
     application = CrosswordWindow()
     application.show()
     app.exec()
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv)
