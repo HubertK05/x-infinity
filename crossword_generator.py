@@ -12,13 +12,26 @@ class CrosswordGenerator:
 
     def generate(self, solution: Optional[str] = None) -> Crossword:
         """Generates the crossword based on entries given to the generator"""
-        solution_word = solution if solution else random.choice(self.entries).word
-        matching = self._find_random_matching(solution_word)
+        if solution:
+            attempts = [solution]
+        else:
+            words = [entry.word for entry in self.entries[:]]
+            random.shuffle(words)
+            attempts = words
+
+        matching = None
+        for attempt in attempts:
+            matching = self._find_random_matching(attempt)
+            if matching:
+                break
+        if not matching:
+            raise CrosswordGenerationError("Cannot create crossword with the given word list")
+
         solution_column = max(matching, key=lambda entry: entry[0])[0]
         adjusted_matching = [(solution_column - pos, entry) for pos, entry in matching]
         return Crossword(solution_column, adjusted_matching)
 
-    def _find_random_matching(self, solution: str) -> List[Tuple[int, Entry]]:
+    def _find_random_matching(self, solution: str) -> Optional[List[Tuple[int, Entry]]]:
         result: List[Tuple[int, Entry]] = []
         for letter in solution:
             entries_copy = self.entries[:]
@@ -31,7 +44,7 @@ class CrosswordGenerator:
                     found = True
                     break
             if not found:
-                raise CrosswordGenerationError("Cannot create crossword with the given word list")
+                return None
         return result
 
     def _can_add_entry(self, entry: Entry, letter: str, solution: str, result: List[Tuple[int, Entry]]) -> bool:
