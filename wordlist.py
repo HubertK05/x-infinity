@@ -1,4 +1,4 @@
-from typing import List, Self
+from typing import Dict, List
 from entry import Entry
 from util import ConflictingEntryNameError, EmptyWordlistNameError
 
@@ -8,27 +8,21 @@ class Wordlist:
         if not name:
             raise EmptyWordlistNameError("Wordlist name is empty")
         self.name = name
-        self.__entries = {}
+        self.__entries: Dict[str, Entry] = {}
         for entry in entries:
-            self.__entries[entry.word] = entry.definition
-
-    def __eq__(self, other: Self):
-        return self.name == other.name and sorted(self.entries) == sorted(other.entries)
+            self.__entries[entry.word] = entry
 
     @property
     def entries(self):
-        return [Entry(word, definition) for word, definition in self.__entries.items()]
+        return list(self.__entries.values())
 
     def get(self, word) -> Entry:
-        definition = self.__entries.get(word)
-        if definition is None:
-            return None
-        return Entry(word, definition)
+        return self.__entries.get(word)
 
     def add(self, entry: Entry):
         if self.get(entry.word):
             raise ConflictingEntryNameError(f"Entry with name {entry.word} already exists")
-        self.__entries[entry.word] = entry.definition
+        self.__entries[entry.word] = entry
 
     def remove(self, name: str):
         if self.__entries.get(name):
@@ -37,4 +31,4 @@ class Wordlist:
     def update(self, entry: Entry):
         if self.get(entry.word) is None:
             raise ConflictingEntryNameError(f"Entry with name {entry.word} does not exist")
-        self.__entries[entry.word] = entry.definition
+        self.__entries[entry.word] = entry

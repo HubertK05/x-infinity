@@ -1,4 +1,3 @@
-from typing import Self
 from util import EmptyEntryError
 
 
@@ -10,9 +9,6 @@ class Entry:
             raise EmptyEntryError("Definition is empty")
         self.word = word
         self.definition = definition
-
-    def __eq__(self, other: Self):
-        return self.word == other.word and self.definition == other.definition
 
     def as_json(self):
         return {"word": self.word, "definition": self.definition}

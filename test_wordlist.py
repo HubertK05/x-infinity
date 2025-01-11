@@ -9,8 +9,8 @@ def test_wordlist_init():
     second_entry = Entry("word2", "meaning2")
     wordlist = Wordlist("test", [first_entry, second_entry])
     assert wordlist.name == "test"
-    assert wordlist.get("word1") == Entry("word1", "meaning1")
-    assert wordlist.get("word2") == Entry("word2", "meaning2")
+    assert wordlist.get("word1") == first_entry
+    assert wordlist.get("word2") == second_entry
     assert wordlist.get("word3") is None
 
 

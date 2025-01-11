@@ -27,8 +27,6 @@ class WordlistWindow(widgets.QMainWindow):
         self.__update_wordlists_ui()
         self.ui.wordlists.itemClicked.connect(self.__on_wordlist_clicked)
         self.ui.wordlist.itemClicked.connect(self.__on_word_clicked)
-        self.ui.wordlist_pages.setCurrentIndex(0)
-        self.ui.word_pages.setCurrentIndex(0)
 
         self.ui.new_entry_button.clicked.connect(self.__on_new_entry_dialog)
         self.ui.edit_entry_button.clicked.connect(self.__on_update_entry_dialog)
@@ -49,11 +47,9 @@ class WordlistWindow(widgets.QMainWindow):
         self.__update_wordlists_ui()
 
     def __delete_wordlist(self):
-        self.db.delete_wordlist(self.selected_wordlist.name)
         self.selected_entry = None
         self.selected_wordlist = None
-        self.__update_entry_ui()
-        self.__update_words_ui()
+        self.db.delete_wordlist(self.selected_wordlist.name)
         self.__update_wordlists_ui()
 
     def __on_use_wordlist(self):
@@ -127,7 +123,6 @@ class WordlistWindow(widgets.QMainWindow):
         self.db.set_wordlist(self.selected_wordlist)
         self.selected_entry = None
         self.__update_words_ui()
-        self.__update_entry_ui()
 
     def __on_generate_wordlist(self):
         entries = self.db.get_full_data()
