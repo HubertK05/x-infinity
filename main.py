@@ -1,12 +1,12 @@
 import sys
 from typing import List, Optional, Tuple
 import PySide6.QtWidgets as widgets
-from crossword_generator import CrosswordGenerator
-from crosswords_ui import Ui_MainWindow
-from entry import Entry
-from util import CrosswordGenerationError
-from wordlist import Wordlist
-from wordlist_window import WordlistWindow
+from backend.crossword_generator import CrosswordGenerator
+from ui_widgets.crosswords_ui import Ui_MainWindow
+from backend.entry import Entry
+from backend.util import CrosswordGenerationError
+from backend.wordlist import Wordlist
+from ui.wordlist_window import WordlistWindow
 
 
 class CrosswordWindow(widgets.QMainWindow):

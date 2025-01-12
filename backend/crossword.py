@@ -1,7 +1,7 @@
 from typing import List, Tuple
-from entry import Entry
-from letter import Letter
-from util import InvalidCrosswordError
+from backend.entry import Entry
+from backend.letter import Letter
+from backend.util import InvalidCrosswordError
 
 
 class Crossword:

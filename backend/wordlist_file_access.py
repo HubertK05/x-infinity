@@ -1,11 +1,11 @@
 import json
 from typing import Dict, List
 
-from entry import Entry
+from backend.entry import Entry
 import os
 
-from util import InvalidWordlistNameError
-from wordlist import Wordlist
+from backend.util import InvalidWordlistNameError
+from backend.wordlist import Wordlist
 
 
 class WordlistFileAccess:

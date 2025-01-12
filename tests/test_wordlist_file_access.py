@@ -1,7 +1,7 @@
 import pytest
-from wordlist import Wordlist
-from wordlist_file_access import WordlistFileAccess
-from util import InvalidWordlistNameError
+from backend.wordlist import Wordlist
+from backend.wordlist_file_access import WordlistFileAccess
+from backend.util import InvalidWordlistNameError
 
 
 def test_wordlist_database_get_invalid_wordlist_name():

@@ -5,7 +5,7 @@ import aiohttp
 from bs4 import BeautifulSoup, SoupStrainer
 import requests
 
-from entry import Entry
+from backend.entry import Entry
 
 WORD_SOURCE = "https://raw.githubusercontent.com/MichaelWehar/Public-Domain-Word-Lists/master/5000-more-common.txt"
 

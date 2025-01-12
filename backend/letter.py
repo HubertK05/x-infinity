@@ -1,5 +1,5 @@
 from typing import Self
-from util import InvalidLetterError
+from backend.util import InvalidLetterError
 
 
 class Letter:

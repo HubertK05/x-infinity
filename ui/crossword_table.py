@@ -1,6 +1,6 @@
 import PySide6.QtWidgets as widgets
 from PySide6.QtGui import QBrush, QColor, QKeyEvent
-from crossword import Crossword
+from backend.crossword import Crossword
 
 
 WHITE = QColor(255, 255, 255)

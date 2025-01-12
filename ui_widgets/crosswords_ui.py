@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHeaderView, QLa
     QMenuBar, QPushButton, QSizePolicy, QStackedWidget,
     QStatusBar, QTableWidgetItem, QVBoxLayout, QWidget)
 
-from crossword_table import CrosswordTable
+from ui.crossword_table import CrosswordTable
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):

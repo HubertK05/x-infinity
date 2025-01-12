@@ -1,4 +1,4 @@
-from util import EmptyEntryError
+from backend.util import EmptyEntryError
 
 
 class Entry:

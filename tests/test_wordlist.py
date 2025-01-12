@@ -1,7 +1,7 @@
 import pytest
-from entry import Entry
-from util import ConflictingEntryNameError, InvalidWordlistNameError
-from wordlist import Wordlist
+from backend.entry import Entry
+from backend.util import ConflictingEntryNameError, InvalidWordlistNameError
+from backend.wordlist import Wordlist
 
 
 def test_wordlist_init():

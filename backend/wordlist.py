@@ -1,6 +1,6 @@
 from typing import Dict, List
-from entry import Entry
-from util import ConflictingEntryNameError, InvalidWordlistNameError
+from backend.entry import Entry
+from backend.util import ConflictingEntryNameError, InvalidWordlistNameError
 
 
 class Wordlist:

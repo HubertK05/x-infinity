@@ -1,9 +1,9 @@
 import random
 from typing import List, Tuple, Optional
 
-from crossword import Crossword
-from entry import Entry
-from util import CrosswordGenerationError
+from backend.crossword import Crossword
+from backend.entry import Entry
+from backend.util import CrosswordGenerationError
 
 
 class CrosswordGenerator:

@@ -3,15 +3,15 @@ from typing import List, Optional
 import PySide6.QtWidgets as widgets
 from PySide6.QtGui import QCloseEvent
 
-from entry import Entry
-from new_wordlist_ui import Ui_new_wordlist_dialog
-from update_entry_ui import Ui_update_entry_dialog
-from update_wordlist_ui import Ui_update_wordlist_dialog
-from util import ConflictingEntryNameError, EmptyEntryError, InvalidWordlistNameError
-from wordlist import Wordlist
-from wordlist_file_access import WordlistFileAccess
-from wordlists_ui import Ui_MainWindow
-from new_entry_ui import Ui_new_entry_dialog
+from backend.entry import Entry
+from ui_widgets.new_wordlist_ui import Ui_new_wordlist_dialog
+from ui_widgets.update_entry_ui import Ui_update_entry_dialog
+from ui_widgets.update_wordlist_ui import Ui_update_wordlist_dialog
+from backend.util import ConflictingEntryNameError, EmptyEntryError, InvalidWordlistNameError
+from backend.wordlist import Wordlist
+from backend.wordlist_file_access import WordlistFileAccess
+from ui_widgets.wordlists_ui import Ui_MainWindow
+from ui_widgets.new_entry_ui import Ui_new_entry_dialog
 
 
 class WordlistWindow(widgets.QMainWindow):

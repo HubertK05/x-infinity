@@ -1,6 +1,6 @@
 import pytest
-from letter import Letter
-from util import InvalidLetterError
+from backend.letter import Letter
+from backend.util import InvalidLetterError
 
 
 def test_letter_init():

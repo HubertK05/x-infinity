@@ -1,6 +1,6 @@
 import pytest
-from entry import Entry
-from util import EmptyEntryError
+from backend.entry import Entry
+from backend.util import EmptyEntryError
 
 
 def test_init_entry():

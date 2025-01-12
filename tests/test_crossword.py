@@ -1,8 +1,8 @@
 import pytest
-from crossword import Crossword
-from entry import Entry
-from letter import Letter
-from util import InvalidCrosswordError
+from backend.crossword import Crossword
+from backend.entry import Entry
+from backend.letter import Letter
+from backend.util import InvalidCrosswordError
 
 
 def test_crossword_init():
