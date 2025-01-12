@@ -1,3 +1,4 @@
+import random
 from typing import List, Optional
 import PySide6.QtWidgets as widgets
 from PySide6.QtGui import QCloseEvent
@@ -14,7 +15,10 @@ from new_entry_ui import Ui_new_entry_dialog
 
 
 class WordlistWindow(widgets.QMainWindow):
+    """A window in which the user manages their wordlists and entries."""
+
     def __init__(self, parent=None):
+        """Initializes the wordlist selection window."""
         super().__init__(parent)
 
         self.wordlists: List[Wordlist] = []
@@ -40,33 +44,46 @@ class WordlistWindow(widgets.QMainWindow):
         self.ui.generate_definitions_button.clicked.connect(self.__on_generate_definitions)
 
     def create_wordlist(self, name: str):
+        """Creates a new empty wordlist with a given name."""
         self.db.set_wordlist(Wordlist(name, []))
         self.__update_wordlists_ui()
 
     def rename_wordlist(self, old_name: str, new_name: str):
+        """Renames a given wordlist."""
         self.db.rename_wordlist(old_name, new_name)
         self.__update_wordlists_ui()
 
     def __delete_wordlist(self):
+        """
+        Deletes the selected wordlist, alongside with its file and all its
+        entries.
+        """
         self.selected_entry = None
         self.selected_wordlist = None
         self.db.delete_wordlist(self.selected_wordlist.name)
         self.__update_wordlists_ui()
 
     def __on_use_wordlist(self):
+        """Uses the selected wordlist for crosswords. Closes this window."""
         self.parent().selected_wordlist = self.selected_wordlist
         self.parent().ui.selected_wordlist_label.setText(f"Selected wordlist: {self.selected_wordlist.name}")
         self.close()
 
     def __on_new_wordlist_dialog(self):
+        """Opens the wordlist creation dialog."""
         dialog = CreateWordlistDialog(self)
         dialog.exec()
 
     def __on_update_wordlist_dialog(self):
+        """Opens the wordlist rename dialog."""
         dialog = UpdateWordlistDialog(self.selected_wordlist.name, self)
         dialog.exec()
 
     def __update_wordlists_ui(self):
+        """
+        Refreshes the list of wordlists. Also hides wordlist content and
+        entry content.
+        """
         self.ui.wordlist_pages.setCurrentIndex(0)
         self.ui.word_pages.setCurrentIndex(0)
         self.ui.wordlists.clear()
@@ -74,15 +91,21 @@ class WordlistWindow(widgets.QMainWindow):
             self.ui.wordlists.addItem(name)
 
     def __on_wordlist_clicked(self, item: widgets.QListWidgetItem):
+        """Selects a given wordlist and shows its options."""
         self.selected_wordlist = self.db.get_wordlist(item.text())
         self.__update_words_ui()
 
     def add_entry(self, entry: Entry):
+        """Adds the entry to the selected wordlist."""
         self.selected_wordlist.add(entry)
         self.db.set_wordlist(self.selected_wordlist)
         self.__update_words_ui()
 
     def __update_words_ui(self):
+        """
+        Refreshes the contents of the wordlist in the UI. Also hides entry
+        content.
+        """
         self.ui.word_pages.setCurrentIndex(0)
         if self.selected_wordlist:
             self.ui.wordlist_pages.setCurrentIndex(1)
@@ -93,16 +116,19 @@ class WordlistWindow(widgets.QMainWindow):
             self.ui.wordlist_pages.setCurrentIndex(0)
 
     def __on_word_clicked(self, item: widgets.QListWidgetItem):
+        """Selects a given entry and shows its options."""
         self.selected_entry = self.selected_wordlist.get(item.text())
         self.__update_entry_ui()
 
     def update_entry(self, entry: Entry):
+        """Sets the selected entry in the selected wordlist to a new entry."""
         self.selected_wordlist.update(entry)
         self.db.set_wordlist(self.selected_wordlist)
         self.selected_entry = entry
         self.__update_entry_ui()
 
     def __update_entry_ui(self):
+        """Refreshes the content of a single entry."""
         if self.selected_entry:
             entry = self.selected_entry
             self.ui.word_label.setText(entry.word)
@@ -112,26 +138,37 @@ class WordlistWindow(widgets.QMainWindow):
             self.ui.word_pages.setCurrentIndex(0)
 
     def __on_new_entry_dialog(self):
+        """Opens the new entry dialog."""
         dialog = NewEntryDialog(self)
         dialog.exec()
 
     def __on_update_entry_dialog(self):
+        """Opens the update entry dialog."""
         dialog = UpdateEntryDialog(self.selected_entry.word, self)
         dialog.exec()
 
     def __on_delete_entry(self):
+        """Deletes a given entry from the selected wordlist."""
         self.selected_wordlist.remove(self.selected_entry.word)
         self.db.set_wordlist(self.selected_wordlist)
         self.selected_entry = None
         self.__update_words_ui()
 
     def __on_generate_wordlist(self):
+        """
+        Automatically generates a new wordlist of 100 randomly selected
+        words with their definitions.
+        """
         entries = self.db.get_full_data()
-        wordlist = Wordlist("Generated", entries)
+        wordlist = Wordlist("Generated", random.sample(entries, 100))
         self.db.set_wordlist(wordlist)
         self.__update_wordlists_ui()
 
     def __on_generate_definitions(self):
+        """
+        Attempts to automatically complete words with their definitions. This
+        doesn't guarantee that every word gets its definition.
+        """
         words = set([entry.word for entry in self.selected_wordlist.entries])
         entries = self.db.get_full_data()
         matching_entries = [entry for entry in entries if entry.word in words]
@@ -146,6 +183,8 @@ class WordlistWindow(widgets.QMainWindow):
 
 
 class NewEntryDialog(widgets.QDialog):
+    """A dialog window used in entry creation."""
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_new_entry_dialog()
@@ -153,6 +192,7 @@ class NewEntryDialog(widgets.QDialog):
         self.ui.buttonBox.accepted.connect(self.__on_accepted)
 
     def __on_accepted(self):
+        """Creates a new entry."""
         try:
             entry = Entry(self.ui.word.text(), self.ui.definition.text())
             self.parent().add_entry(entry)
@@ -161,6 +201,8 @@ class NewEntryDialog(widgets.QDialog):
 
 
 class UpdateEntryDialog(widgets.QDialog):
+    """A dialog window used in entry update."""
+
     def __init__(self, word: str, parent=None):
         super().__init__(parent)
         self.ui = Ui_update_entry_dialog()
@@ -169,6 +211,7 @@ class UpdateEntryDialog(widgets.QDialog):
         self.ui.name.setText(f"Update entry \"{word}\"")
 
     def __on_accepted(self):
+        """Updates the entry's definition."""
         try:
             name = self.parent().selected_entry.word
             definition = self.ui.definition.text()
@@ -179,6 +222,8 @@ class UpdateEntryDialog(widgets.QDialog):
 
 
 class CreateWordlistDialog(widgets.QDialog):
+    """A dialog window used in wordlist creation."""
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_new_wordlist_dialog()
@@ -186,6 +231,7 @@ class CreateWordlistDialog(widgets.QDialog):
         self.ui.buttonBox.accepted.connect(self.__on_accepted)
 
     def __on_accepted(self):
+        """Creates a new wordlist."""
         try:
             self.parent().create_wordlist(self.ui.name.text())
         except (ConflictingEntryNameError, InvalidWordlistNameError) as e:
@@ -193,6 +239,8 @@ class CreateWordlistDialog(widgets.QDialog):
 
 
 class UpdateWordlistDialog(widgets.QDialog):
+    """A dialog window used in wordlist update."""
+
     def __init__(self, name: str, parent=None):
         super().__init__(parent)
         self.ui = Ui_update_wordlist_dialog()
@@ -201,6 +249,7 @@ class UpdateWordlistDialog(widgets.QDialog):
         self.ui.old_name.setText(f"Update wordlist \"{name}\"")
 
     def __on_accepted(self):
+        """Updates the wordlist's name."""
         try:
             self.parent().rename_wordlist(self.parent().selected_wordlist.name, self.ui.new_name.text())
         except (ConflictingEntryNameError, InvalidWordlistNameError) as e:

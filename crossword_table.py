@@ -1,5 +1,5 @@
 import PySide6.QtWidgets as widgets
-from PySide6.QtGui import QBrush, QColor
+from PySide6.QtGui import QBrush, QColor, QKeyEvent
 from crossword import Crossword
 
 
@@ -18,12 +18,28 @@ DOWN_ARROW_KEY = 16777237
 
 
 class CrosswordTable(widgets.QTableWidget):
+    """
+    The UI element representing the table containing crossword rows and
+    columns, with the underlying state containing both the solution and
+    currently inserted letters.
+
+    The crossword can be toggled between checking and non-checking states;
+    the former shows the user, which letters have been correctly inserted
+    into the crossword, while the latter allows the user to modify the
+    contents of the crossword.
+    """
+
     def __init__(self, crossword: Crossword, parent=None):
+        """Initializes the crossword table with `crossword` as its state."""
         super().__init__(parent)
         self.__backend = crossword
         self.cellDoubleClicked.connect(self.__on_double_clicked)
 
     def new_crossword(self, crossword: Crossword):
+        """
+        Creates a new `crossword` and refreshes the table, resetting its row
+        and column amount. Also switches to non-checking mode.
+        """
         self.__backend = crossword
         self.clear()
         self.setRowCount(len(crossword.solution))
@@ -32,6 +48,10 @@ class CrosswordTable(widgets.QTableWidget):
         self.__refresh_ui()
 
     def __refresh_ui(self):
+        """
+        Repaints each square in the crossword table, considering different
+        cell types in the crossword.
+        """
         for row, (offset, entry) in enumerate(self.__backend.solution):
             minimum, maximum = offset, offset + len(entry.word) - 1
             for col in range(0, self.__backend.width()):
@@ -50,12 +70,14 @@ class CrosswordTable(widgets.QTableWidget):
                     item.setBackground(QBrush(WHITE))
 
     def toggle_check(self):
+        """Switches between checking and non-checking mode."""
         if self.__checking:
             self.__uncheck()
         else:
             self.__check()
 
     def __check(self):
+        """Repaints squares to show the user which letters were correct."""
         self.__checking = True
         for row, col, correct in self.__backend.check():
             if correct:
@@ -64,10 +86,20 @@ class CrosswordTable(widgets.QTableWidget):
                 self.item(row, col).setBackground(QBrush(RED))
 
     def __uncheck(self):
+        """Reverts the crossword to the non-checking mode."""
         self.__checking = False
         self.__refresh_ui()
 
-    def keyPressEvent(self, event) -> None:
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        """
+        Reponds to a key pressed.
+        - letter (a-z) - input that letter to the selected cell.
+        - space - move to the next crossword cell.
+        - backspace - remove the letter from the selected cell.
+        - arrow keys - move to the neighboring cell.
+
+        If the crossword is at the checking state, this has no effect.
+        """
         if self.__checking:
             return
 
@@ -94,6 +126,10 @@ class CrosswordTable(widgets.QTableWidget):
             self.setCurrentCell(max(0, row - 1), col)
 
     def __type_letter(self, row: int, col: int, key: str):
+        """
+        Inserts a lowercase letter `key` into a cell at the position
+        (`row`, `col`) and moves to the next cell.
+        """
         minimum = self.__backend.solution[row][0]
         maximum = minimum + len(self.__backend.solution[row][1].word) - 1
         if minimum <= col <= maximum:
@@ -101,6 +137,14 @@ class CrosswordTable(widgets.QTableWidget):
         self.__go_to_next(row, col)
 
     def __go_to_next(self, row: int, col: int):
+        """
+        Moves to the next crossword cell, from (`row`, `col`)
+        The next crossword cell is as follows:
+        - if cell is before the word occurence, goes to the beginning of word.
+        - if cell is in the word occurence, goes one cell to the right.
+        - if cell is at the end of the word occurence or after, goes to the
+        beginning of the next word.
+        """
         minimum = self.__backend.solution[row][0]
         maximum = minimum + len(self.__backend.solution[row][1].word) - 1
         if col < maximum:
@@ -109,14 +153,25 @@ class CrosswordTable(widgets.QTableWidget):
             self.setCurrentCell(row + 1, self.__backend.solution[row + 1][0])
 
     def __remove_letter(self, row: int, col: int):
+        """Sets the letter at (`row`, `col`) to an empty value."""
         self.__set_letter(row, col, "")
 
     def __set_letter(self, row: int, col: int, letter: str):
+        """
+        Sets the letter at (`row`, `col`) to `letter` both in the UI and in
+        the underlying crossword state. If the letter is fixed, this has no
+        effect.
+        """
         if not self.__backend.get_letter(row, col).fixed:
             self.__backend.set_letter(row, col, letter)
             self.item(row, col).setText(letter)
 
     def __on_double_clicked(self, row: int, col: int):
+        """
+        Fixes the letter at (`row`, `col`) both in the UI and in crossword
+        state. Fixing a letter reveals it to the user and makes it immutable.
+        If the crossword is at checking state, this has no effect.
+        """
         if self.__checking:
             return
 

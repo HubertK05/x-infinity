@@ -11,7 +11,13 @@ WORD_SOURCE = "https://raw.githubusercontent.com/MichaelWehar/Public-Domain-Word
 
 
 class WordScraper:
+    """A class responsible for handling entries fetched from the web."""
+
     async def get_definition(self, word: str, session: aiohttp.ClientSession):
+        """
+        Fetches the `word`'s definition from the Oxford Learner's Dictionary.
+        Returns `None` if cannot find the definition.
+        """
         url = f"https://www.oxfordlearnersdictionaries.com/definition/english/{word}"
         headers = {'user-agent': 'x-infinity/0.0.1'}
         async with session.get(url, headers=headers) as response:
@@ -23,6 +29,7 @@ class WordScraper:
         return definition.text
 
     async def get_multiple_definitions(self, words: List[str]):
+        """Fetches definitions of `words` asynchronously."""
         definitions = []
         async with aiohttp.ClientSession() as session:
             for word in words:
@@ -31,6 +38,10 @@ class WordScraper:
         return definitions
 
     def download_full_sample(self):
+        """
+        Fetches definitions of all words from a public domain list of 5000
+        common words.
+        """
         response = requests.get(WORD_SOURCE)
         words = response.text.split()
         long_words = [word for word in words if len(word) >= 4]
