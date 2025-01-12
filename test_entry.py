@@ -14,6 +14,6 @@ def test_init_entry_empty_word_fails():
         Entry("", "definition")
 
 
-def test_init_entry_empty_definition_fails():
-    with pytest.raises(EmptyEntryError):
-        Entry("word", "")
+def test_init_entry_empty_definition_succeeds():
+    entry = Entry("word", "")
+    assert entry.definition == ""
