@@ -105,6 +105,9 @@ Uruchomienie
 ```
 python3 data.py
 ```
+
+**UWAGA: Pobieranie danych trwa kilkadziesiąt sekund. Same dane nieprzetworzone mają łącznie ok. 300 MB.**
+
 Skrypt ten pobiera dane ze stron internetowych i zapisuje je do pliku `full_data.json`. Teoretycznie powinien zawierać do 5000 haseł i ich definicji. W praktyce posiada ok. 3450 haseł (stan z 12.01.25), bo nie wszystkie hasła mają swoje odpowiedniki w Oxford Learner's Dictionary.
 
 ## Refleksje
