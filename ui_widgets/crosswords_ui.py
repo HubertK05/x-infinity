@@ -17,8 +17,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractItemView, QApplication, QHeaderView, QLabel,
     QLineEdit, QListWidget, QListWidgetItem, QMainWindow,
-    QMenuBar, QPushButton, QSizePolicy, QStackedWidget,
-    QStatusBar, QTableWidgetItem, QVBoxLayout, QWidget)
+    QPushButton, QSizePolicy, QStackedWidget, QStatusBar,
+    QTableWidgetItem, QVBoxLayout, QWidget)
 
 from ui.crossword_table import CrosswordTable
 
@@ -139,10 +139,6 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.selected_wordlist_label)
 
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar(MainWindow)
-        self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1330, 20))
-        MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
@@ -156,7 +152,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Crossword", None))
         self.no_crossword_label.setText(QCoreApplication.translate("MainWindow", u"Select a wordlist and create a crossword", None))
         self.title.setText(QCoreApplication.translate("MainWindow", u"Crossword based on wordlist <wordlist>", None))
 
