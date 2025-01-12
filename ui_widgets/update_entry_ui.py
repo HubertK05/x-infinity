@@ -60,7 +60,7 @@ class Ui_update_entry_dialog(object):
     # setupUi
 
     def retranslateUi(self, update_entry_dialog):
-        update_entry_dialog.setWindowTitle(QCoreApplication.translate("update_entry_dialog", u"Dialog", None))
+        update_entry_dialog.setWindowTitle(QCoreApplication.translate("update_entry_dialog", u"Update entry", None))
         self.name.setText(QCoreApplication.translate("update_entry_dialog", u"Updating word <word>", None))
         self.label_2.setText(QCoreApplication.translate("update_entry_dialog", u"Definition", None))
     # retranslateUi

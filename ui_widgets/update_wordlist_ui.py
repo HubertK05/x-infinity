@@ -60,7 +60,7 @@ class Ui_update_wordlist_dialog(object):
     # setupUi
 
     def retranslateUi(self, update_wordlist_dialog):
-        update_wordlist_dialog.setWindowTitle(QCoreApplication.translate("update_wordlist_dialog", u"Dialog", None))
+        update_wordlist_dialog.setWindowTitle(QCoreApplication.translate("update_wordlist_dialog", u"Update wordlist", None))
         self.old_name.setText(QCoreApplication.translate("update_wordlist_dialog", u"Updating wordlist <name>", None))
         self.label.setText(QCoreApplication.translate("update_wordlist_dialog", u"New name", None))
     # retranslateUi
