@@ -4,14 +4,13 @@ import PySide6.QtWidgets as widgets
 from PySide6.QtGui import QCloseEvent
 
 from backend.entry import Entry
-from ui_widgets.new_wordlist_ui import Ui_new_wordlist_dialog
-from ui_widgets.update_entry_ui import Ui_update_entry_dialog
-from ui_widgets.update_wordlist_ui import Ui_update_wordlist_dialog
-from backend.util import ConflictingEntryNameError, EmptyEntryError, InvalidWordlistNameError
+from ui.new_entry_dialog import NewEntryDialog
+from ui.new_wordlist_dialog import CreateWordlistDialog
+from ui.update_entry_dialog import UpdateEntryDialog
+from ui.update_wordlist_dialog import UpdateWordlistDialog
 from backend.wordlist import Wordlist
 from backend.wordlist_file_access import WordlistFileAccess
 from ui_widgets.wordlists_ui import Ui_MainWindow
-from ui_widgets.new_entry_ui import Ui_new_entry_dialog
 
 
 class WordlistWindow(widgets.QMainWindow):
@@ -180,77 +179,3 @@ class WordlistWindow(widgets.QMainWindow):
 
     def closeEvent(self, event: QCloseEvent):
         self.parent().ui.select_wordlist_button.setEnabled(True)
-
-
-class NewEntryDialog(widgets.QDialog):
-    """A dialog window used in entry creation."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.ui = Ui_new_entry_dialog()
-        self.ui.setupUi(self)
-        self.ui.buttonBox.accepted.connect(self.__on_accepted)
-
-    def __on_accepted(self):
-        """Creates a new entry."""
-        try:
-            entry = Entry(self.ui.word.text(), self.ui.definition.text())
-            self.parent().add_entry(entry)
-        except (EmptyEntryError, ConflictingEntryNameError) as e:
-            widgets.QMessageBox.critical(self, "Error", str(e))
-
-
-class UpdateEntryDialog(widgets.QDialog):
-    """A dialog window used in entry update."""
-
-    def __init__(self, word: str, parent=None):
-        super().__init__(parent)
-        self.ui = Ui_update_entry_dialog()
-        self.ui.setupUi(self)
-        self.ui.buttonBox.accepted.connect(self.__on_accepted)
-        self.ui.name.setText(f"Update entry \"{word}\"")
-
-    def __on_accepted(self):
-        """Updates the entry's definition."""
-        try:
-            name = self.parent().selected_entry.word
-            definition = self.ui.definition.text()
-            entry = Entry(name, definition)
-            self.parent().update_entry(entry)
-        except (EmptyEntryError, ConflictingEntryNameError) as e:
-            widgets.QMessageBox.critical(self, "Error", str(e))
-
-
-class CreateWordlistDialog(widgets.QDialog):
-    """A dialog window used in wordlist creation."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.ui = Ui_new_wordlist_dialog()
-        self.ui.setupUi(self)
-        self.ui.buttonBox.accepted.connect(self.__on_accepted)
-
-    def __on_accepted(self):
-        """Creates a new wordlist."""
-        try:
-            self.parent().create_wordlist(self.ui.name.text())
-        except (ConflictingEntryNameError, InvalidWordlistNameError) as e:
-            widgets.QMessageBox.critical(self, "Error", str(e))
-
-
-class UpdateWordlistDialog(widgets.QDialog):
-    """A dialog window used in wordlist update."""
-
-    def __init__(self, name: str, parent=None):
-        super().__init__(parent)
-        self.ui = Ui_update_wordlist_dialog()
-        self.ui.setupUi(self)
-        self.ui.buttonBox.accepted.connect(self.__on_accepted)
-        self.ui.old_name.setText(f"Update wordlist \"{name}\"")
-
-    def __on_accepted(self):
-        """Updates the wordlist's name."""
-        try:
-            self.parent().rename_wordlist(self.parent().selected_wordlist.name, self.ui.new_name.text())
-        except (ConflictingEntryNameError, InvalidWordlistNameError) as e:
-            widgets.QMessageBox.critical(self, "Error", str(e))

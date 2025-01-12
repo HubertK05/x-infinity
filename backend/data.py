@@ -48,15 +48,3 @@ class WordScraper:
 
         definitions = asyncio.run(self.get_multiple_definitions(long_words))
         return [Entry(long_words[i], definitions[i]) for i in range(len(definitions)) if definitions[i]]
-
-
-def main():
-    results = WordScraper().download_full_sample()
-    results = [entry.as_json() for entry in results]
-
-    with open('full_data.json', 'w') as file:
-        file.write(json.dumps(results, indent=4))
-
-
-if __name__ == "__main__":
-    main()
