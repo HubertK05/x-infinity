@@ -1,93 +1,123 @@
 # x-infinity
 
+## Dane autora
+Imię i nazwisko: Hubert Klimowicz
 
+Nr indeksu: 337244
 
-## Getting started
+## Temat projektu
+Krzyżówki.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Celem jest stworzenie programu umożliwiającego tworzenie i rozwiązywanie krzyżówek. Hasło jest słowem do odgadnięcia, a definicja, ew. synonim hasła jest jego podpowiedzią. Hasła należy pobierać ze stron internetowych powszechnie uznanych słowników, przy użyciu bibliotek
+typu `requests` lub `BeautifulSoup`.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Generowane krzyżówki mają być różnych wielkości i poziomów trudności, przy czym poziom trudności może być modelowany dowolną heurystyką.
 
-## Add your files
+Program nie powinien pobierać całego słownika, zalecane jest również generowanie krzyżówek bez dostępu do internetu, poprzez użycie
+wcześniej wygenerowanych treści.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## Klasy
 
+### Klasy zaplecza (backend)
+`CrosswordGenerator` - odpowiada za generowanie krzyżówek, przy czym tworzy je zarówno w oparciu o losowe słowa, jak i o wybrane z podanej
+wcześniej listy słów.
+
+`Crossword` - krzyżówka, która trzyma w sobie rozwiązanie oraz obecny stan jej komórek. Ten drugi może być modyfikowany przez użytkownika.
+
+`WordScraper` - odpowiada za pobieranie haseł i ich definicji ze stron słownika Oxford Learner's Dictionary. Hasła są w języku angielskim.
+
+`Entry` - pojedyncza para hasło - definicja.
+
+`Letter` - pojedyncza litera w krzyżówce, może być ustawiona na zamrożoną (po to, żeby nie modyfikować jej w krzyżówce).
+
+`WordlistFileAccess` - odpowiada za zarządzanie listami słów w systemie plików.
+
+`Wordlist` - pojedyncza, nazwana lista słów, używana do generowania krzyżówek na ich podstawie. Zapisywane są w systemie plików, w katalogu `data`.
+
+`EmptyEntryError`, `InvalidCrosswordError`, `ConflictingEntryNameError`, `CrosswordGenerationError`, `InvalidWordlistNameError`, `InvalidLetterError` - 
+klasy odpowiadające za reprezentację różnych błędów występujących w aplikacji.
+
+Do większości klas zaplecza (zgodnie z rozsądkiem) zostały napisane testy. Znajdują się one w katalogu `tests`.
+
+### Klasy UI:
+`CrosswordTable` - tabela, która zawiera krzyżówkę, można ją obsługiwać naciskaniem klawiszy na klawiaturze.
+
+`CrosswordWindow` - okno główne, w którym rozwiązuje się krzyżówki.
+
+`NewEntryDialog` - okno dialogowe dodawania hasła do listy słów.
+
+`CreateWordlistdialog` - okno dialogowe dodawania listy słów.
+
+`UpdateEntryDialog` - okno dialogowe aktualizacji hasła.
+
+`UpdateWordlistDialog` - okno dialogowe aktualizacji nazwy listy słów.
+
+`WordlistWindow` - okno zarządzania listami słów oraz hasłami.
+
+Klasy UI dziedziczą po klasach wygenerowanych przez `pyside6-uic`, znajdujących się w katalogu `ui_widgets`.
+
+## Instrukcja
+### Uruchomienie projektu
+Na początek należy sklonować to repozytorium.
+
+Po wejściu do katalogu projektu uruchomić komendy:
 ```
-cd existing_repo
-git remote add origin https://gitlab-stud.elka.pw.edu.pl/hklimowi/x-infinity.git
-git branch -M main
-git push -uf origin main
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python3 main.py
 ```
 
-## Integrate with your tools
+### Zarządzanie krzyżówkami
+Do okna zarządzania krzyżówkami wchodzi się poprzez wciśnięcie przycisku **Select Wordlist**, na dole ekranu głównego:
+![select button](assets/select_button.png)
 
-- [ ] [Set up project integrations](https://gitlab-stud.elka.pw.edu.pl/hklimowi/x-infinity/-/settings/integrations)
+W tym oknie można dodawać listy słów oraz hasła z ich definicjami, ale również można je usuwać i modyfikować.
+![wordlist window](assets/wordlist_window.png)
 
-## Collaborate with your team
+Istnieje również opcja generowania list słów, która pozwoli na stworzenie nowej listy haseł z już przypisanymi do nich definicjami
+("Generate" po lewej stronie).
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+Oprócz tego można przypisywać definicje automatycznie do niektórych słów (z listy w `full_data.json`). Służy do tego przycisk "Generate definitions", już bardziej po prawej stronie.
 
-## Test and Deploy
+Kliknięcie przycisku "Use this wordlist" zamyka to okno i wybiera odpowiednią listę słów.
 
-Use the built-in continuous integration in GitLab.
+### Rozwiązywanie krzyżówki
+![crossword](assets/crossword.png)
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+Krzyżówkę uzupełnia się, najpierw wybierając kursorem myszy odpowiednie pole, a następnie naciskając klawisze na klawiaturze.
 
-***
+#### Sterowanie
+- dowolna litera a-z, w alfabecie angielskim - wpisuje literę w obecne pole, po czym przesuwa kursor do następnego pola.
+- spacja - przesuwa kursor do następnego pola.
+- backspace - usuwa literę z obecnego pola.
+- strzałki - przemieszczają kursor na odpowiednie sąsiednie pole.
+- podwójne kliknięcie na pole - ujawnia literę. Ta litera jest automatycznie zamrożona i nie można jej modyfikować.
 
-# Editing this README
+#### Sprawdzanie
+Żeby sprawdzić krzyżówkę, należy nacisnąć przycisk "Check your answer", na dole okna głównego. Poprawne pola wyświetlają się na zielono, natomiast niepoprawne - na czerwono. Żeby wyjść z trybu sprawdzania, należy nacisnąć ten sam przycisk ponownie.
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+#### Generowanie w oparciu o dane hasło główne
+Wpisanie dowolnego niepustego słowa w pasku na dole okna głównego spowoduje, że kolejne krzyżówki będą generowane w oparciu o to słowo jako hasło główne.
 
-## Suggestions for a good README
+### Skrypt do pobierania danych
+Uruchomienie
+```
+python3 data.py
+```
+Skrypt ten pobiera dane ze stron internetowych i zapisuje je do pliku `full_data.json`. Teoretycznie powinien zawierać do 5000 haseł i ich definicji. W praktyce posiada ok. 3450 haseł (stan z 12.01.25), bo nie wszystkie hasła mają swoje odpowiedniki w Oxford Learner's Dictionary.
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+## Refleksje
+Przed pisaniem projektu x-infinity miałem już wcześniej doświadczenie w postaci pisania różnych projektów, aczkolwiek nie były to projekty pisane obiektowo, a tym bardziej nie w Pythonie. Dzięki temu projektowi zadomowiłem się nieco bardziej z programowaniem obiektowym.
 
-## Name
-Choose a self-explaining name for your project.
+W mojej opinii projekt realizuje wszystkie założenia podane w temacie:
+- hasła są w języku angielskim,
+- są one pobierane z Oxford Learner's Dictionary, poprzez użycie biblioteki `BeautifulSoup` oraz `aiohttp`, czyli asynchronicznego odpowiednika `requests`, dzięki któremu procedura wysyłania ok. 5000 żądań HTTP była znacząco przyspieszona,
+- jednocześnie program nie pobiera słownika w trakcie korzystania z aplikacji - dane są generowane skryptem `data.py` poza korzystaniem z aplikacji, a następnie odczytywane z `full_data.json`.
+- poziom trudności jest konfigurowalny trojako: przez możliwość generowania krzyżówki na podstawie danego hasła głównego (o dowolnej długości), przez możliwość doboru listy słów z łatwiejszymi lub trudniejszymi słowami i przez możliwość odkrywania liter w krzyżówce.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+Najbardziej złożonym zagadnieniem jest generowanie krzyżówki. Można zrobić to w sposób gwarantujący rezultat, o ile ten istnieje (projekt tego nie implementuje) - mianowicie zastosować algorytm na znajdowanie kojarzenia haseł z listy słów z literami hasła głównego. Zdecydowałem się nie korzystać z tego rozwiązania, ponieważ jest ono przekomplikowane w stosunku do wielkości efektu widoczego po stronie użytkownika. Ostatecznie zdecydowałem się dobierać hasła losowo.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+Generowanie krzyżówek z hasłami ułożonymi **poziomo i pionowo** jest jeszcze trudniejsze i nie było wymagane w projekcie (ustalone na konsultacjach).
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Kod projektu (tj. nazwy zmiennych, klas, metod, dokumentacja) jest napisany po angielsku - jest to nawyk wyrobiony z wcześniejszych projektów.
