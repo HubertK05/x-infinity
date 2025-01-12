@@ -5,7 +5,7 @@ from entry import Entry
 from new_wordlist_ui import Ui_new_wordlist_dialog
 from update_entry_ui import Ui_update_entry_dialog
 from update_wordlist_ui import Ui_update_wordlist_dialog
-from util import ConflictingEntryNameError, EmptyEntryError, EmptyWordlistNameError
+from util import ConflictingEntryNameError, EmptyEntryError, InvalidWordlistNameError
 from wordlist import Wordlist
 from wordlist_file_access import WordlistFileAccess
 from wordlists_ui import Ui_MainWindow

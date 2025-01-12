@@ -10,8 +10,8 @@ from wordlist import Wordlist
 
 class WordlistFileAccess:
     def __validate_wordlist_name(self, name: str):
-        if any([char in name for char in ['/', '\\', '.']]):
-            raise InvalidWordlistNameError("Wordlist cannot contain '/', '\\' or '.'")
+        if not name.isalnum():
+            raise InvalidWordlistNameError("Wordlist name contains non-alphanumeric characters")
 
     def get_wordlist(self, name: str) -> Wordlist:
         self.__validate_wordlist_name(name)

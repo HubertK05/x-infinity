@@ -1,12 +1,14 @@
 from typing import Dict, List
 from entry import Entry
-from util import ConflictingEntryNameError, EmptyWordlistNameError
+from util import ConflictingEntryNameError, InvalidWordlistNameError
 
 
 class Wordlist:
-    def __init__(self, name, entries: List[Entry]):
+    def __init__(self, name: str, entries: List[Entry]):
         if not name:
-            raise EmptyWordlistNameError("Wordlist name is empty")
+            raise InvalidWordlistNameError("Wordlist name is empty")
+        if not name.isalnum():
+            raise InvalidWordlistNameError("Wordlist name contains non-alphanumeric characters")
         self.name = name
         self.__entries: Dict[str, Entry] = {}
         for entry in entries:
@@ -16,7 +18,7 @@ class Wordlist:
     def entries(self):
         return list(self.__entries.values())
 
-    def get(self, word) -> Entry:
+    def get(self, word: str) -> Entry:
         return self.__entries.get(word)
 
     def add(self, entry: Entry):

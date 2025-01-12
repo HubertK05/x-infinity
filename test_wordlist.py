@@ -1,6 +1,6 @@
 import pytest
 from entry import Entry
-from util import ConflictingEntryNameError, EmptyWordlistNameError
+from util import ConflictingEntryNameError, InvalidWordlistNameError
 from wordlist import Wordlist
 
 
@@ -15,8 +15,13 @@ def test_wordlist_init():
 
 
 def test_wordlist_init_fails_with_empty_name():
-    with pytest.raises(EmptyWordlistNameError):
+    with pytest.raises(InvalidWordlistNameError):
         Wordlist("", [])
+
+
+def test_wordlist_init_fails_with_non_alphanumeric_name():
+    with pytest.raises(InvalidWordlistNameError):
+        Wordlist("/", [])
 
 
 def test_wordlist_returns_entries_as_list_correctly():
