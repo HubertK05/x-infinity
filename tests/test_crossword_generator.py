@@ -1,8 +1,6 @@
-import pytest
 from backend.crossword import Crossword
 from backend.crossword_generator import CrosswordGenerator
 from backend.entry import Entry
-from backend.util import CrosswordGenerationError
 
 
 def test_crossword_generator_init():
