@@ -16,6 +16,8 @@ class WordlistFileAccess:
         Checks if `name` is alphanumeric. This is for the safety reason - to
         prevent modifying unwanted directories.
         """
+        if not name:
+            raise InvalidWordlistNameError("Wordlist name is empty")
         if not name.isalnum():
             raise InvalidWordlistNameError("Wordlist name contains non-alphanumeric characters")
 

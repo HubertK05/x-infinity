@@ -57,9 +57,9 @@ class WordlistWindow(widgets.QMainWindow):
         Deletes the selected wordlist, alongside with its file and all its
         entries.
         """
+        self.db.delete_wordlist(self.selected_wordlist.name)
         self.selected_entry = None
         self.selected_wordlist = None
-        self.db.delete_wordlist(self.selected_wordlist.name)
         self.__update_wordlists_ui()
 
     def __on_use_wordlist(self):
