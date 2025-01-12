@@ -44,9 +44,13 @@ class Wordlist:
             raise ConflictingEntryNameError(f"Entry with name {entry.word} already exists")
         self.__entries[entry.word] = entry
 
-    def remove(self, name: str):
-        if self.__entries.get(name):
-            del self.__entries[name]
+    def remove(self, word: str):
+        """
+        Removes an entry at a given name from the wordlist. Does nothing if
+        the entry with a given `word` does not exist.
+        """
+        if self.__entries.get(word):
+            del self.__entries[word]
 
     def update(self, entry: Entry):
         """
