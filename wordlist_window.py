@@ -1,5 +1,6 @@
 from typing import List, Optional
 import PySide6.QtWidgets as widgets
+from PySide6.QtGui import QCloseEvent
 
 from entry import Entry
 from new_wordlist_ui import Ui_new_wordlist_dialog
@@ -55,6 +56,7 @@ class WordlistWindow(widgets.QMainWindow):
     def __on_use_wordlist(self):
         self.parent().selected_wordlist = self.selected_wordlist
         self.parent().ui.selected_wordlist_label.setText(f"Selected wordlist: {self.selected_wordlist.name}")
+        self.close()
 
     def __on_new_wordlist_dialog(self):
         dialog = CreateWordlistDialog(self)
@@ -139,6 +141,9 @@ class WordlistWindow(widgets.QMainWindow):
         self.db.set_wordlist(self.selected_wordlist)
         self.__update_entry_ui()
 
+    def closeEvent(self, event: QCloseEvent):
+        self.parent().ui.select_wordlist_button.setEnabled(True)
+
 
 class NewEntryDialog(widgets.QDialog):
     def __init__(self, parent=None):
@@ -183,7 +188,7 @@ class CreateWordlistDialog(widgets.QDialog):
     def __on_accepted(self):
         try:
             self.parent().create_wordlist(self.ui.name.text())
-        except (ConflictingEntryNameError, EmptyWordlistNameError) as e:
+        except (ConflictingEntryNameError, InvalidWordlistNameError) as e:
             widgets.QMessageBox.critical(self, "Error", str(e))
 
 
@@ -198,5 +203,5 @@ class UpdateWordlistDialog(widgets.QDialog):
     def __on_accepted(self):
         try:
             self.parent().rename_wordlist(self.parent().selected_wordlist.name, self.ui.new_name.text())
-        except (ConflictingEntryNameError, EmptyWordlistNameError) as e:
+        except (ConflictingEntryNameError, InvalidWordlistNameError) as e:
             widgets.QMessageBox.critical(self, "Error", str(e))

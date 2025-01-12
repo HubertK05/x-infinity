@@ -47,6 +47,7 @@ class CrosswordWindow(widgets.QMainWindow):
     def __on_select_wordlist(self):
         self.wordlist_window = WordlistWindow(self)
         self.wordlist_window.show()
+        self.ui.select_wordlist_button.setEnabled(False)
 
 
 def main(argv: list[str]):
